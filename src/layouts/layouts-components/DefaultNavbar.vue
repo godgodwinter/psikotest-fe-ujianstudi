@@ -1,12 +1,13 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import API from "@/services/siswaAuthServices";
 const router = useRouter();
 const doLogout = async () => {
     if (confirm("Apakah anda yakin untuk Logout ?")) {
-        // const res = await API.doLogout();
-        // if (res === true) {
-        router.push({ name: "Login" });
-        // }
+        const res = await API.doLogout();
+        if (res === true) {
+            router.push({ name: "Login" });
+        }
     }
 };
 
@@ -23,13 +24,13 @@ const goTo = async (name) => {
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
                     </svg>
-                </label>
+            </label>
             <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                <!-- <RouterLink :to="{ name: 'ujian.psikotest.index' }">
-                            <li><a>Beranda</a></li>
-                        </RouterLink>
-                        <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
-                            <li><a>Paket</a></li>
+                    <!-- <RouterLink :to="{ name: 'ujian.psikotest.index' }">
+                                    <li><a>Beranda</a></li>
+                                </RouterLink>
+                                <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
+                                <li><a>Paket</a></li>
                     </RouterLink> -->
                 <li><span @click="goTo('studi-paket')">PAKET</span></li>
                 <li><span @click="goTo('user-profile')">PROFILE</span></li>
@@ -40,17 +41,17 @@ const goTo = async (name) => {
             </div>
             <span class="btn btn-ghost normal-case text-xl"> UJIAN STUDI </span>
             <!-- <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
-                    <span class="btn btn-ghost normal-case text-xl"> UJIAN </span>
-                </RouterLink> -->
+                            <span class="btn btn-ghost normal-case text-xl"> UJIAN </span>
+                        </RouterLink> -->
         </div>
         <div class="navbar-center hidden lg:flex">
             <ul class="menu menu-horizontal px-1">
                 <!-- <RouterLink :to="{ name: 'ujian.psikotest.index' }">
-                        <li><a>BERANDA</a></li>
-                    </RouterLink>
-                    <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
-                        <li><a>PAKET</a></li>
-                    </RouterLink> -->
+                                <li><a>BERANDA</a></li>
+                            </RouterLink>
+                            <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
+                                <li><a>PAKET</a></li>
+                            </RouterLink> -->
                 <li><span @click="goTo('studi-paket')" class="font-bold underline text-blue-400">PAKET</span></li>
                 <li><span @click="goTo('user-profile')">PROFILE</span></li>
                 <li><a @click="doLogout()">LOGOUT</a></li>

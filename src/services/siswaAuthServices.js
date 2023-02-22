@@ -1,8 +1,11 @@
 import Api from "@/axios/axios";
+import ApiNode from "@/axios/axiosNode";
 // import jwt_decode from "jwt-decode";
 import Toast from "@/components/lib/Toast.js";
 import { useSiswaAuthStore } from "@/stores/siswaAuthStore";
+import { useUjianstudiPagesStore } from "@/stores/ujianstudi/ujianstudiPagesStore";
 const siswaAuthStore = useSiswaAuthStore();
+const ujianstudiPagesStore = useUjianstudiPagesStore();
 
 const doLogin = async (username, password) => {
     try {
@@ -21,6 +24,8 @@ const doLogin = async (username, password) => {
             // let decoded = jwt_decode(token);
             //   storeAuth.commit("setDataAuth", decoded);
             // console.log(decoded);
+            await getProfile();
+            await getAspekDetail();
             Toast.success("Success", "Login Berhasil!");
         } else {
             Toast.danger("Warning", "Login gagal!");
@@ -29,6 +34,29 @@ const doLogin = async (username, password) => {
     } catch (error) {
         console.error(error);
         Toast.danger("Warning", "Login gagal!");
+    }
+};
+
+const getProfile = async () => {
+    try {
+        const response = await ApiNode.get("siswa/profile",);
+        ujianstudiPagesStore.set_siswa_profile(response.data)
+    } catch (error) {
+        console.error(error);
+        // Toast.danger("Warning", "Login gagal!");
+    }
+};
+
+const getAspekDetail = async () => {
+    try {
+        const response = await ApiNode.get("siswa/ujianstudi/aspek_detail",);
+        console.log('====================================');
+        console.log(response.data);
+        console.log('====================================');
+        ujianstudiPagesStore.set_siswa_ujianstudi(response.data || [])
+    } catch (error) {
+        console.error(error);
+        // Toast.danger("Warning", "Login gagal!");
     }
 };
 
@@ -69,6 +97,12 @@ const doLogout = async (alert = true) => {
     try {
         localStorage.removeItem("siswa_token");
         localStorage.removeItem("siswa_isLogin");
+        localStorage.removeItem("siswa_profile");
+        localStorage.removeItem("siswa_isLogin");
+
+
+        ujianstudiPagesStore.set_siswa_ujianstudi([])
+        ujianstudiPagesStore.set_siswa_profile(null)
         // storeAdminAuth.setToken("");
         // storeAdminAuth.setIsLogin(false);
         if (alert) {

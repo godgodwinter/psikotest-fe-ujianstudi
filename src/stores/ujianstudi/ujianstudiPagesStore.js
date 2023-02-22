@@ -6,89 +6,30 @@ moment.updateLocale("id", localization);
 // import { useRouter } from "vue-router";
 // import Toast from "@/components/lib/Toast.js";
 
-export const useAdminPagesStore = defineStore("adminPagesStore", () => {
+export const useUjianstudiPagesStore = defineStore("ujianstudiPagesStore", () => {
     // const router = useRouter();
     // State
-    const isSidebarActive = ref(false);
+    const siswa_profile = ref(localStorage.getItem("siswa_profile") ? JSON.parse(localStorage.getItem("siswa_profile")) : null);
     // Getter Setter
-    const getIsSidebarActive = computed(() => isSidebarActive.value);
-    const setIsSidebarActive = (item) => {
-        isSidebarActive.value = item;
+    const get_siswa_profile = computed(() => siswa_profile.value);
+    const set_siswa_profile = (item) => {
+        localStorage.setItem("siswa_profile", JSON.stringify(item))
+        siswa_profile.value = item;
     };
-    const toggleSideBar = () => {
-        isSidebarActive.value = !isSidebarActive.value;
-    }
-
-    const pagesActive = ref(false);
+    const siswa_ujianstudi = ref(localStorage.getItem("siswa_ujianstudi") ? JSON.parse(localStorage.getItem("siswa_ujianstudi")) : null);
     // Getter Setter
-    const getPagesActive = computed(() => pagesActive.value);
-    const setPagesActive = (item) => {
-        pagesActive.value = item;
+    const get_siswa_ujianstudi = computed(() => siswa_ujianstudi.value);
+    const set_siswa_ujianstudi = (item) => {
+        localStorage.setItem("siswa_ujianstudi", JSON.stringify(item))
+        siswa_ujianstudi.value = item;
     };
-
-    const identitas = ref(false);
-    // Getter Setter
-    const getIdentitas = computed(() => identitas.value);
-    const setIdentitas = (item) => {
-        identitas.value = item;
-    };
-
-    const superadmin = ref(localStorage.getItem("superadmin_001") ? localStorage.getItem("superadmin_001") : false);
-    // Getter Setter
-    const getSuperadmin = computed(() => superadmin.value);
-    const setSuperadmin = (item) => {
-        superadmin.value = item;
-    };
-
-    const sekolah_default = { "sekolah_id": "2", "kelas_id": 10, "kelas_nama": "X" };
-    const getsekolah_default = computed(() => sekolah_default)
-    // State
-    const pages_sekolah_aktif = ref(localStorage.getItem("pages_sekolah_aktif") ? JSON.parse(localStorage.getItem("pages_sekolah_aktif")) : null);
-    const getpages_sekolah_aktif = computed(() => pages_sekolah_aktif.value)
-    const setpages_sekolah_aktif = (item) => {
-        pages_sekolah_aktif.value = item;
-        localStorage.setItem("pages_sekolah_aktif", JSON.stringify(item))
-    }
-
-
-    const ujianstudi_pengaturan_default = {
-        paketsoal_id: 1,
-        paketsoal_nama: "-",
-        tgl_ujian: moment().add(2, 'days')
-    }
-
-    const ujianstudi_pengaturan = ref(localStorage.getItem("pages_ujianstudi_pengaturan") ? JSON.parse(localStorage.getItem("pages_ujianstudi_pengaturan")) : ujianstudi_pengaturan_default)
-
-    const get_ujianstudi_pengaturan = computed(() => ujianstudi_pengaturan.value)
-    const set_ujianstudi_pengaturan = (item) => {
-        ujianstudi_pengaturan.value = item;
-        localStorage.setItem("pages_ujianstudi_pengaturan", JSON.stringify(item))
-    }
 
     return {
-        isSidebarActive,
-        getIsSidebarActive,
-        setIsSidebarActive,
-        toggleSideBar,
-        pagesActive,
-        getPagesActive,
-        setPagesActive,
-        identitas,
-        getIdentitas,
-        setIdentitas,
-        // !superadmin
-        superadmin,
-        getSuperadmin,
-        setSuperadmin,
-        // untuk sub menu sekolah
-        getsekolah_default,
-        pages_sekolah_aktif,
-        getpages_sekolah_aktif,
-        setpages_sekolah_aktif,
-        // !ujianstudi
-        ujianstudi_pengaturan_default,
-        ujianstudi_pengaturan,
-        get_ujianstudi_pengaturan,
-        set_ujianstudi_pengaturan,
+        siswa_profile,
+        get_siswa_profile,
+        set_siswa_profile,
+        siswa_ujianstudi,
+        get_siswa_ujianstudi,
+        set_siswa_ujianstudi,
     };
 });

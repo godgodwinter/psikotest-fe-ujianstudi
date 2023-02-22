@@ -4,7 +4,7 @@ import axios from "axios";
 // https://dev.to/lukocastillo/svelte-3-how-to-connect-your-app-with-a-rest-api-axios-2h4e
 const BASE_URL = import.meta.env.VITE_API_URL
   ? import.meta.env.VITE_API_URL
-  : "http://localhost:8000/";
+  : "http://localhost:8002/";
 // Create a instance of axios to use the same base url.
 const axiosAPI = axios.create({
   baseURL: `${BASE_URL}api/${import.meta.env.VITE_API_VERSION}/`, // it's not recommended to have this info here.
@@ -14,7 +14,7 @@ const axiosAPI = axios.create({
 const apiRequest = (method, url, request) => {
   // console.log(localStorage.getItem('token'));
   const headers = {
-    authorization: `Bearer ${localStorage.getItem("token")}`,
+    authorization: `Bearer ${localStorage.getItem("siswa_token")}`,
   };
   // using the axios instance to perform the request that received from each http method
   return axiosAPI({
@@ -29,7 +29,7 @@ const apiRequest = (method, url, request) => {
 const apiRequestDown = (method, url, request) => {
   // console.log(localStorage.getItem('token'));
   const headers = {
-    authorization: `Bearer ${localStorage.getItem("token")}`,
+    authorization: `Bearer ${localStorage.getItem("siswa_token")}`,
     responseType: "blob",
   };
   // using the axios instance to perform the request that received from each http method

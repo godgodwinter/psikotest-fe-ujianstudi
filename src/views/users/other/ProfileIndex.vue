@@ -1,5 +1,17 @@
+<script setup>
+import { computed, ref, defineAsyncComponent } from "vue"
+import { useUjianstudiPagesStore } from "@/stores/ujianstudi/ujianstudiPagesStore";
+const ujianstudiPagesStore = useUjianstudiPagesStore();
+
+const AlertFailed = defineAsyncComponent(() =>
+    import('@/components/alert/AlertFailed.vue')
+)
+
+const data = ref(null)
+data.value = ujianstudiPagesStore.get_siswa_profile;
+</script>
 <template>
-    <div class="py-10 px-2 ">
+    <div class="py-10 px-2 " v-if="data">
         <div
             class="relative max-w-md mx-auto md:max-w-2xl  min-w-0 break-words bg-white w-full mb-6 rounded-lg border  rounded-xl pt-16 transition-shadow duration-500 ease-out cursor-pointer hover:shadow-xl">
             <div class="pt-4 px-6">
@@ -12,10 +24,12 @@
                     </div>
                     <div class="text-center mt-24 w-96">
                         <h3 class="text-2xl text-slate-700 font-bold leading-normal mb-1">
-                            Username
+                            {{ data.username }}
                         </h3>
                         <div class="text-xs mt-0 mb-2 text-slate-400 font-bold uppercase">
-                            <i class="fas fa-map-marker-alt mr-2 text-slate-400 opacity-75"></i>Kelas, Sekolah
+                            <i class="fas fa-map-marker-alt mr-2 text-slate-400 opacity-75"></i>
+                            {{ data.sekolah_nama }}
+                            <br> {{ data.kelas_nama }}
                         </div>
                     </div>
 
@@ -30,29 +44,29 @@
                                                 <td class="whitespace-nowrap w-1/12">No Induk</td>
                                                 <td class="whitespace-nowrap w-1/12">:</td>
                                                 <td class="whitespace-nowrap w-10/12">
-                                                    aa
+                                                    {{ data.nomeridentitas }}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>Nama</td>
                                                 <td>:</td>
-                                                <td>bb</td>
+                                                <td>{{ data.nama }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Jenis Kelamin</td>
                                                 <td>:</td>
-                                                <td>cc</td>
+                                                <td>{{ data.jk }}</td>
                                             </tr>
                                             <!-- row 3 -->
                                             <tr>
                                                 <td>Sekolah</td>
                                                 <td>:</td>
-                                                <td>cc</td>
+                                                <td>{{ data.sekolah_nama }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Kelas</td>
                                                 <td>:</td>
-                                                <td>aa</td>
+                                                <td>{{ data.kelas_nama }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -77,5 +91,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div v-else>
+        <AlertFailed :message="'Gagal mendapatkan data!'" />
     </div>
 </template>
