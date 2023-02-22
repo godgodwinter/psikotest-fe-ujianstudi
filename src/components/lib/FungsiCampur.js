@@ -97,6 +97,8 @@ const formatRupiah = (angka = 0, prefix = "Rp. ") => {
 };
 
 const numberPattern = /\d+/g;
+
+
 const Fungsi = {
   romanize,
   fnNumberToAlphabet,

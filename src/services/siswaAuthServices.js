@@ -50,9 +50,6 @@ const getProfile = async () => {
 const getAspekDetail = async () => {
     try {
         const response = await ApiNode.get("siswa/ujianstudi/aspek_detail",);
-        console.log('====================================');
-        console.log(response.data);
-        console.log('====================================');
         ujianstudiPagesStore.set_siswa_ujianstudi(response.data || [])
     } catch (error) {
         console.error(error);

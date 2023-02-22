@@ -1,6 +1,28 @@
 <script setup>
+import { computed, ref } from "vue"
 import { useRouter } from 'vue-router';
 import API from "@/services/siswaAuthServices";
+import { useTimerStore } from "@/stores/timerStore";
+import moment from "moment/min/moment-with-locales";
+import localization from "moment/locale/id";
+moment.updateLocale("id", localization);
+
+const timerStore = useTimerStore();
+timerStore.$subscribe(
+    (mutation, state) => {
+        if (state.waktu == 0) {
+            // getData();
+        }
+    },
+    { detached: false }
+); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
+const waktu = computed(() => timerStore.getWaktu);
+const timer = ref(10);
+
+const onKlik = (time) => {
+    timerStore.doJalankanTimer(time);
+};
+// onKlik(10)
 const router = useRouter();
 const doLogout = async () => {
     if (confirm("Apakah anda yakin untuk Logout ?")) {
@@ -14,6 +36,8 @@ const doLogout = async () => {
 const goTo = async (name) => {
     router.push({ name });
 };
+
+timerStore.doPeriksaUjianAktif();
 </script>
 <template>
     <div class="navbar bg-gradient-to-b from-[#d1f6e1] to-white border-b-2 border-gray-50">
@@ -24,34 +48,34 @@ const goTo = async (name) => {
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
                     </svg>
-            </label>
-            <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                </label>
+                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
                     <!-- <RouterLink :to="{ name: 'ujian.psikotest.index' }">
-                                    <li><a>Beranda</a></li>
-                                </RouterLink>
-                                <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
-                                <li><a>Paket</a></li>
-                    </RouterLink> -->
-                <li><span @click="goTo('studi-paket')">PAKET</span></li>
-                <li><span @click="goTo('user-profile')">PROFILE</span></li>
-                <li><a @click="doLogout()">LOGOUT</a></li>
+                                                                                                                                            <li><a>Beranda</a></li>
+                                                                                                                                    </RouterLink>
+                                                                                                                                <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
+                                                                                                                                <li><a>Paket</a></li>
+                                                                                                                    </RouterLink> -->
+                    <li><span @click="goTo('studi-paket')">PAKET</span></li>
+                    <li><span @click="goTo('user-profile')">PROFILE</span></li>
+                    <li><a @click="doLogout()">LOGOUT</a></li>
 
                     <!-- <li><a>Proses</a></li> -->
                 </ul>
             </div>
             <span class="btn btn-ghost normal-case text-xl"> UJIAN STUDI </span>
             <!-- <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
-                            <span class="btn btn-ghost normal-case text-xl"> UJIAN </span>
-                        </RouterLink> -->
+                                                                                                                                    <span class="btn btn-ghost normal-case text-xl"> UJIAN </span>
+                                                                                                                                </RouterLink> -->
         </div>
         <div class="navbar-center hidden lg:flex">
             <ul class="menu menu-horizontal px-1">
                 <!-- <RouterLink :to="{ name: 'ujian.psikotest.index' }">
-                                <li><a>BERANDA</a></li>
-                            </RouterLink>
-                            <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
-                                <li><a>PAKET</a></li>
-                            </RouterLink> -->
+                                                                                                                                        <li><a>BERANDA</a></li>
+                                                                                                                                    </RouterLink>
+                                                                                                                                    <RouterLink :to="{ name: 'ujian.psikotest.paket' }">
+                                                                                                                                        <li><a>PAKET</a></li>
+                                                                                                                                    </RouterLink> -->
                 <li><span @click="goTo('studi-paket')" class="font-bold underline text-blue-400">PAKET</span></li>
                 <li><span @click="goTo('user-profile')">PROFILE</span></li>
                 <li><a @click="doLogout()">LOGOUT</a></li>
@@ -59,6 +83,9 @@ const goTo = async (name) => {
             </ul>
         </div>
         <div class="navbar-end space-x-2">
+            <!-- <div v-if="waktu"> -->
+            {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}
+            <!-- </div> -->
         </div>
     </div>
 </template>

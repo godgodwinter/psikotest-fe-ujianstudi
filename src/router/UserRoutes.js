@@ -23,6 +23,11 @@ const UserRoutes = [
         name: "studi-paket",
         component: () => import("@/views/users/ujian_studi/PaketIndex.vue"),
       },
+      {
+        path: "/pages/users/studi/paket/detail/:aspek_detail_id/index/:index",
+        name: "studi-paket-detail",
+        component: () => import("@/views/users/ujian_studi/PaketDetail.vue"),
+      },
     ],
   }
 ];
