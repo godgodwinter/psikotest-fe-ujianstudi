@@ -46,45 +46,6 @@ const doLogout = async () => {
                                 MASTERING
                             </h3>
                         </li>
-                        <li class="lg:w-full py-0" :class="[pagesActive == 'sekolah' ? pagesActiveClass : '']">
-                            <router-link :to="{ name: 'admin-sekolah' }"
-                                class="text-base-content font-normal rounded-lg flex p-2 items-center group hover:link">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="ml-3">Sekolah </span>
-                            </router-link>
-                        </li>
-                        <li class="lg:w-full py-0">
-                            <h3
-                                class="text-base-content font-bold rounded-lg flex items-center pt-4  group hover:link underline">
-                                UJIAN STUDI
-                            </h3>
-                        </li>
-                        <li class="lg:w-full py-0" :class="[pagesActive == 'ujianstudi-banksoal' ? pagesActiveClass : '']">
-                            <router-link :to="{ name: 'admin-ujianstudi-banksoal-aspek_detail' }"
-                                class="text-base-content font-normal rounded-lg flex items-center p-2 group hover:link">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="ml-3">Banksoal Ujian Studi </span>
-                            </router-link>
-                        </li>
-                        <li class="lg:w-full py-0" :class="[pagesActive == 'ujianstudi-paketsoal' ? pagesActiveClass : '']">
-                            <router-link :to="{ name: 'admin-ujianstudi-paketsoal' }"
-                                class="text-base-content font-normal rounded-lg flex items-center p-2 group hover:link">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="ml-3">Paketsoal Ujian Studi </span>
-                            </router-link>
-                        </li>
                         <li class="lg:w-full py-0">
                             <h3
                                 class="text-base-content font-bold rounded-lg flex items-center pt-4  group hover:link underline">
@@ -103,7 +64,7 @@ const doLogout = async () => {
                             </span>
                         </li>
                         <li class="lg:w-full py-0" :class="[pagesActive == 'dashboard' ? pagesActiveClass : '']">
-                            <router-link :to="{ name: 'admin-dashboard' }"
+                            <router-link :to="{ name: 'user-home' }"
                                 class="text-base-content font-normal rounded-lg flex items-center p-2 group hover:link">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                     fill="currentColor">

@@ -25,3 +25,43 @@ export const fn_get_sisa_waktu = (tgl_selesai) => {
         console.log(error.message);
     }
 }
+
+
+export const fnNumberToAlphabet = (num) => {
+    if (isNaN(num)) return NaN;
+    //   let digits = String(+num).split(""),
+    //     key = [
+    //       "",
+    //       "A",
+    //       "B",
+    //       "C",
+    //       "D",
+    //       "E",
+    //       "F",
+    //       "G",
+    //       "H",
+    //       "I",
+    //       "J",
+    //       "K",
+    //       "L",
+    //       "M",
+    //       "N",
+    //       "O",
+    //       "P",
+    //       "Q",
+    //       "R",
+    //       "S",
+    //       "T",
+    //       "U",
+    //       "V",
+    //       "W",
+    //       "X",
+    //       "Y",
+    //       "Z",
+    //     ],
+    //     alphabet = "",
+    //     i = 3;
+    //   while (i--) alphabet = (key[+digits.pop() + i * 10] || "") + alphabet;
+    //   return Array(+digits.join("") + 1).join("") + alphabet;
+    return (num + 9).toString(36).toUpperCase();
+};

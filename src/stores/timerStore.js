@@ -53,41 +53,43 @@ export const useTimerStore = defineStore("timerStore", () => {
     }, 1000);
   };
   const doJalankanTimerV2_tgl_selesai = (tgl_selesai, aspek_detail_id, index) => {
-    // console.log('====================================');
-    // console.log(tgl_selesai, aspek_detail_id, index);
-    // console.log('====================================');
-    let selesai = moment(tgl_selesai);
-    let now = moment();
-    let duration = moment.duration(selesai.diff(now));
-    let detik = parseInt(duration.asSeconds().toFixed(0))
-    let menit = parseFloat(duration.asMinutes().toFixed(2))
-
-    // !  save tgl_mulai dan tgl_selesai kedata mapel
     let dataProses = ujianstudiPagesStore.get_siswa_ujianstudi;
-    dataProses[index].tgl_mulai = now;
-    dataProses[index].tgl_selesai = tgl_selesai;
-    ujianstudiPagesStore.set_siswa_ujianstudi(dataProses)
+    if (dataProses[index].tgl_selesai == null) {
+      // console.log('====================================');
+      // console.log(tgl_selesai, aspek_detail_id, index);
+      // console.log('====================================');
+      let selesai = moment(tgl_selesai);
+      let now = moment();
+      let duration = moment.duration(selesai.diff(now));
+      let detik = parseInt(duration.asSeconds().toFixed(0))
+      let menit = parseFloat(duration.asMinutes().toFixed(2))
 
-    // ! jaalankan timer
+      // !  save tgl_mulai dan tgl_selesai kedata mapel
+      dataProses[index].tgl_mulai = now;
+      dataProses[index].tgl_selesai = tgl_selesai;
+      ujianstudiPagesStore.set_siswa_ujianstudi(dataProses)
 
-    let total = detik;
-    doJalankanTimer(total)
-    // clearInterval(interval.value);
-    // interval.value = setInterval(() => {
-    //   if (total === 0) {
-    //     clearInterval(interval.value);
-    //     Toast.danger("Warning", " Waktu habis!");
-    //     console.log("store: Waktu habis");
-    //     router.push({
-    //       name: "studi-paket",
-    //       // params: { aspek_id: id }
-    //     });
-    //   } else {
-    //     total--;
-    //     waktu.value = total;
-    //     // console.log('store: '+ waktu.value)
-    //   }
-    // }, 1000);
+      // ! jaalankan timer
+
+      let total = detik;
+      doJalankanTimer(total)
+      // clearInterval(interval.value);
+      // interval.value = setInterval(() => {
+      //   if (total === 0) {
+      //     clearInterval(interval.value);
+      //     Toast.danger("Warning", " Waktu habis!");
+      //     console.log("store: Waktu habis");
+      //     router.push({
+      //       name: "studi-paket",
+      //       // params: { aspek_id: id }
+      //     });
+      //   } else {
+      //     total--;
+      //     waktu.value = total;
+      //     // console.log('store: '+ waktu.value)
+      //   }
+      // }, 1000);
+    }
   };
 
   const doPeriksaUjianAktif = async () => {
@@ -96,11 +98,12 @@ export const useTimerStore = defineStore("timerStore", () => {
       let get_sisa_waktu = null
       if (item.tgl_selesai) {
         get_sisa_waktu = await fn_get_sisa_waktu(item.tgl_selesai);
-
-        console.log('====================================');
-        console.log(get_sisa_waktu);
-        console.log('====================================');
+        ujianstudiPagesStore.set_siswa_ujianstudi_aktif(item)
         if (get_sisa_waktu.detik > 0) {
+
+          // console.log('====================================');
+          // console.log(get_sisa_waktu);
+          // console.log('====================================');
           doJalankanTimer(get_sisa_waktu.detik)
         }
       }

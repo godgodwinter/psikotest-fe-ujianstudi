@@ -114,7 +114,9 @@ const onKlik = (tgl_selesai, aspek_detail_id, index) => {
             </div>
             <div>
                 <div class="w-full flex justify-center px-4">
-                    <button class="btn btn-lg btn-success" @click="doMulai()">Mulai</button>
+
+                    <button class="btn btn-lg btn-success" @click="doMulai()" v-if="data.tgl_mulai === null">Mulai</button>
+                    <button class="btn btn-lg btn-dark" v-else>Sudah dikerjakan</button>
                 </div>
             </div>
             <div class="divider"></div>
