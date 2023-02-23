@@ -1,11 +1,16 @@
 <script setup>
-import { ref, defineAsyncComponent } from "vue"
+import { ref, computed, defineAsyncComponent } from "vue"
 import { useUjianstudiPagesStore } from "@/stores/ujianstudi/ujianstudiPagesStore";
 import { useRouter } from "vue-router";
 import { fn_get_sisa_waktu } from "@/components/lib/babengHelper"
+import moment from "moment/min/moment-with-locales";
+import localization from "moment/locale/id";
+moment.updateLocale("id", localization);
 const router = useRouter()
 const ujianstudiPagesStore = useUjianstudiPagesStore();
 
+const profile = computed(() => ujianstudiPagesStore.get_siswa_profile)
+const ujianStudi = computed(() => ujianstudiPagesStore.siswa_ujianstudi)
 const AlertFailed = defineAsyncComponent(() =>
     import('@/components/alert/AlertFailed.vue')
 )
@@ -13,6 +18,32 @@ const data = ref(ujianstudiPagesStore.get_siswa_ujianstudi || [])
 
 const doMulai = (aspek_detail_id, index) => {
     router.push({ name: "studi-paket-detail", params: { aspek_detail_id, index } })
+}
+
+let arr = [{
+    id: 1,
+    nama: 2
+}, {
+    id: 12,
+    nama: 12
+}]
+
+const export_nama = ref(`${moment().format("YYYY_MM_DD-")}-${profile.value.id}-${profile.value.nama}`)
+
+const exportJson = () => {
+    let dataExport = {
+        profile: profile.value,
+        dataUjian: ujianStudi.value
+    }
+    const data = JSON.stringify(dataExport)
+    const blob = new Blob([data], { type: 'text/plain' })
+    const e = document.createEvent('MouseEvents'),
+        a = document.createElement('a');
+    a.download = `${export_nama.value}.json`;
+    a.href = window.URL.createObjectURL(blob);
+    a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+    e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    a.dispatchEvent(e);
 }
 </script>
 <template>
@@ -29,6 +60,9 @@ const doMulai = (aspek_detail_id, index) => {
         </div>
     </div>
     <div class="py-10 p-4 mx-2 rounded-lg border" v-else>
+        <div class="py-2">
+            <button class="btn btn-warning btn-sm" @click="exportJson()">Export Data Ujian</button>
+        </div>
         <div class="overflow-x-auto">
             <table class="table table-compact w-full">
                 <thead>
@@ -40,7 +74,7 @@ const doMulai = (aspek_detail_id, index) => {
                         <th>Waktu Pengerjaan</th>
                         <th>Jumlah Soal</th>
                         <th>Tipe</th>
-                </tr>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item, index in data" :key="item.id">
@@ -57,7 +91,7 @@ const doMulai = (aspek_detail_id, index) => {
                                 <button class="btn btn-info btn-sm" @click="doMulai(item.id, index)">MULAI</button>
                             </span>
                             <!-- <button class="btn btn-warning" v-else-if="item.status == 'selesai'">SELESAI</button>
-                                                                                                                                                                                                                                                                                                                                        <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
 
                         </td>
                         <th>{{ item.aspek_detail_nama }}</th>

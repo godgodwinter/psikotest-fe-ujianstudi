@@ -34,12 +34,41 @@ export const useUjianstudiPagesStore = defineStore("ujianstudiPagesStore", () =>
         localStorage.setItem("siswa_ujianstudi", JSON.stringify(item))
         siswa_ujianstudi.value = item;
     };
-    const siswa_ujianstudi_aktif = ref(localStorage.getItem("siswa_ujianstudi") ? JSON.parse(localStorage.getItem("siswa_ujianstudi")) : null); //!{} satu mapel yang aktif
+    const siswa_ujianstudi_aktif = ref(null); //!{} satu mapel yang aktif
     // Getter Setter
     const get_siswa_ujianstudi_aktif = computed(() => siswa_ujianstudi_aktif.value); //!{} satu mapel yang aktif
     const set_siswa_ujianstudi_aktif = (item) => {
         siswa_ujianstudi_aktif.value = item;
     };
+
+    const siswa_ujianstudi_soal_aktif = ref(null)
+    const get_siswa_ujianstudi_soal_aktif = computed(() => siswa_ujianstudi_soal_aktif.value)
+    const set_siswa_ujianstudi_soal_aktif = (item, index = 0, is_updated = false) => {
+        if (item) {
+            console.log(item);
+            item.index = index
+            siswa_ujianstudi_soal_aktif.value = item;
+            // // console.log('====================================');
+            // // console.log(siswa_ujianstudi_soal_aktif.value);
+            // // console.log('====================================');
+            if (is_updated) {
+                // ! 1. update mapel_aktif    //siswa_ujianstudi_aktif
+                // ! 2. update   localstroage //siswa_ujianstudi
+                for (const [index_mapel, item_mapel] of siswa_ujianstudi.value.entries()) {
+                    if (item_mapel.id === siswa_ujianstudi_aktif.value.id) {
+                        // siswa_ujianstudi_aktif.value.soal[index] = item
+                        siswa_ujianstudi.value[index_mapel] = siswa_ujianstudi_aktif.value
+                        // console.log(siswa_ujianstudi_aktif.value);
+                    }
+                }
+                set_siswa_ujianstudi(siswa_ujianstudi.value)
+                //     //! set_siswa_ujianstudi(siswa_ujianstudi.value)
+            }
+        } else {
+            siswa_ujianstudi_soal_aktif.value = null;
+        }
+
+    }
 
     return {
         isSidebarActive,
@@ -55,6 +84,9 @@ export const useUjianstudiPagesStore = defineStore("ujianstudiPagesStore", () =>
         siswa_ujianstudi_aktif,
         get_siswa_ujianstudi_aktif,
         set_siswa_ujianstudi_aktif,
+        siswa_ujianstudi_soal_aktif,
+        get_siswa_ujianstudi_soal_aktif,
+        set_siswa_ujianstudi_soal_aktif,
 
     };
 });

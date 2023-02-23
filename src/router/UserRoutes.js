@@ -28,6 +28,11 @@ const UserRoutes = [
         name: "studi-paket-detail",
         component: () => import("@/views/users/ujian_studi/PaketDetail.vue"),
       },
+      {
+        path: "/pages/users/studi/proses/soal/index/:index",
+        name: "studi-proses-soal",
+        component: () => import("@/views/users/ujian_studi/SoalIndex.vue"),
+      },
     ],
   }
 ];

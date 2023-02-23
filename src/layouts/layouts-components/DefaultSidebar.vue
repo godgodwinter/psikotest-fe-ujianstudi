@@ -7,6 +7,10 @@ import { useUjianstudiPagesStore } from "../../stores/ujianstudi/ujianstudiPages
 import API from "@/services/siswaAuthServices";
 import { useTimerStore } from "@/stores/timerStore";
 import { fnNumberToAlphabet } from "@/components/lib/babengHelper"
+import Toast from "@/components/lib/Toast";
+import moment from "moment/min/moment-with-locales";
+import localization from "moment/locale/id";
+moment.updateLocale("id", localization);
 
 const ujianstudiPagesStore = useUjianstudiPagesStore();
 const router = useRouter();
@@ -15,8 +19,12 @@ timerStore.$subscribe(
     (mutation, state) => {
         if (state.waktu == 0) {
             // getData();
-            ujian_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif
-            data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
+            // ujian_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif
+            // data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
+            router.push({
+                name: "studi-paket",
+                // params: { aspek_id: id }
+            });
         }
         waktu.value = timerStore.getWaktu;
     },
@@ -24,8 +32,10 @@ timerStore.$subscribe(
 ); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
 ujianstudiPagesStore.$subscribe(
     (mutation, state) => {
-        ujian_aktif.value = state.siswa_ujianstudi_aktif
-        data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
+        if (ujianstudiPagesStore.get_siswa_ujianstudi_aktif) {
+            ujian_aktif.value = state.siswa_ujianstudi_aktif
+            data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
+        }
     },
     { detached: false }
 ); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
@@ -55,6 +65,58 @@ const doLogout = async () => {
         }
     }
 };
+const goToSoal = (index, soal) => {
+    ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(soal, index)
+    router.push({ name: 'studi-proses-soal', params: { index } })
+}
+
+const periksaJawaban = (soal, kode_jawaban) => {
+    let result = "-"
+    // console.log(soal, kode_jawaban);
+    for (const [index, item] of soal.pilihanjawaban.entries()) {
+        if (item.kode_jawaban === kode_jawaban) {
+            // console.log(index);
+            return fnNumberToAlphabet(index + 1)
+        }
+    }
+    return result
+}
+
+const doSelesai = async () => {
+    if (confirm("Apakah anda yakin mengkhiri mapel ini?")) {
+        // 1. stop interval timer 
+        timerStore.doClearInterval();
+
+        // 2. update tgl_selesai pada ujian aktive menjadi dateNow
+        // 3. set mapel aktif = null
+        // 4.  set soal aktif=null
+        // 5. redirect to paket
+        let dataMapel = ujianstudiPagesStore.get_siswa_ujianstudi;
+        let dataMapel_aktif = ujianstudiPagesStore.get_siswa_ujianstudi_aktif;
+        for (const [index_mapel, item_mapel] of dataMapel.entries()) {
+            // console.log('====================================');
+            // console.log(item_mapel, dataMapel_aktif);
+            // console.log('====================================');
+            if (item_mapel.id === dataMapel_aktif.id) {
+                // console.log('====================================');
+                // console.log(item_mapel.tgl_selesai, item_mapel, moment());
+                // console.log('====================================');
+                item_mapel.tgl_selesai = moment().format();
+            }
+        }
+        // console.log('====================================');
+        // console.log(dataMapel);
+        // console.log('====================================');
+        ujianstudiPagesStore.set_siswa_ujianstudi(dataMapel)
+        ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(null)
+        ujianstudiPagesStore.set_siswa_ujianstudi_aktif(null)
+        Toast.danger("Warning", " Ujian berhasil diakhiri!");
+        router.push({
+            name: "studi-paket",
+            // params: { aspek_id: id }
+        });
+    }
+}
 </script>
 <template>
     <aside :class="{ hidden: !isSideBarActive }" id="sidebar"
@@ -64,6 +126,12 @@ const doLogout = async () => {
             <div class="flex-1 flex flex-col  pb-4 overflow-y-auto">
                 <div class="flex-1 px-3 space-y-1">
                     <ul class="space-y-1 pb-2 lg:flex flex-wrap px-2 gap-0 justify-between">
+                        <li class="lg:w-full py-0 " v-if="waktu > 0">
+                            <h2
+                                class="text-base-content font-bold rounded-lg flex items-center pt-4  group hover:link underline uppercase ">
+                                {{ ujian_aktif.aspek_detail_nama }}
+                            </h2>
+                        </li>
                         <li class="lg:w-full py-0" v-if="waktu > 0">
                             <h3
                                 class="text-base-content font-bold rounded-lg flex items-center pt-4  group hover:link underline">
@@ -75,10 +143,15 @@ const doLogout = async () => {
                             <div class="w-full font-bold text-xs py-4">
                                 <div class="flex flex-wrap gap-2">
                                     <span v-for="item, index in data_soal" :key="item.id">
-                                        <a class="btn btn-xs btn-info" v-if="item.kode_jawaban">{{ index + 1 }}. </a>
-                                        <a class="btn btn-xs btn-warning">{{ index + 1 }}.
+                                        <span @click="goToSoal(index, item)" class="btn btn-xs btn-info"
+                                            v-if="item.kode_jawaban">{{ index + 1 }}. {{
+                                                periksaJawaban(item, item.kode_jawaban) }}</span>
+                                        <span @click="goToSoal(index, item)" class="btn btn-xs btn-warning" v-else>{{ index
+                                            +
+                                            1
+                                        }}.
                                             <!-- {{ fnNumberToAlphabet(1) }} -->
-                                        </a>
+                                        </span>
                                     </span>
                                 </div>
                             </div>

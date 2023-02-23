@@ -12,7 +12,7 @@ const ujianstudiPagesStore = useUjianstudiPagesStore();
 // computed()s become getters
 // function()s become actions
 export const useTimerStore = defineStore("timerStore", () => {
-  const router = useRouter();
+  // const router = useRouter();
   // State
   const waktu = ref(0);
   // Getter Setter
@@ -46,10 +46,11 @@ export const useTimerStore = defineStore("timerStore", () => {
         clearInterval(interval.value);
         Toast.danger("Warning", " Waktu habis!");
         console.log("store: Waktu habis");
-        router.push({
-          name: "studi-paket",
-          // params: { aspek_id: id }
-        });
+        // const router = useRouter();
+        // router.push({
+        //   name: "studi-paket",
+        //   // params: { aspek_id: id }
+        // });
       } else {
         total--;
         waktu.value = total;
@@ -104,8 +105,8 @@ export const useTimerStore = defineStore("timerStore", () => {
       let get_sisa_waktu = null
       if (item.tgl_selesai) {
         get_sisa_waktu = await fn_get_sisa_waktu(item.tgl_selesai);
-        ujianstudiPagesStore.set_siswa_ujianstudi_aktif(item)
         if (get_sisa_waktu.detik > 0) {
+          ujianstudiPagesStore.set_siswa_ujianstudi_aktif(item)
 
           // console.log('====================================');
           // console.log(get_sisa_waktu);
