@@ -63,8 +63,9 @@ const doMulai = () => {
     }
 }
 
-const onKlik = (tgl_selesai, aspek_detail_id, index) => {
-    timerStore.doJalankanTimerV2_tgl_selesai(tgl_selesai, aspek_detail_id, index);
+const onKlik = async (tgl_selesai, aspek_detail_id, index) => {
+    await timerStore.doJalankanTimerV2_tgl_selesai(tgl_selesai, aspek_detail_id, index);
+    await timerStore.doPeriksaUjianAktif();
 };
 </script>
 <template>

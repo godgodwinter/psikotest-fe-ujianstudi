@@ -11,8 +11,27 @@ import { fnNumberToAlphabet } from "@/components/lib/babengHelper"
 const ujianstudiPagesStore = useUjianstudiPagesStore();
 const router = useRouter();
 const timerStore = useTimerStore();
-const waktu = computed(() => timerStore.getWaktu);
-const ujian_aktif = computed(() => ujianstudiPagesStore.get_siswa_ujianstudi_aktif)
+timerStore.$subscribe(
+    (mutation, state) => {
+        if (state.waktu == 0) {
+            // getData();
+            ujian_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif
+            data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
+        }
+        waktu.value = timerStore.getWaktu;
+    },
+    { detached: false }
+); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
+ujianstudiPagesStore.$subscribe(
+    (mutation, state) => {
+        ujian_aktif.value = state.siswa_ujianstudi_aktif
+        data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
+    },
+    { detached: false }
+); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
+const waktu = ref(0);
+const ujian_aktif = ref([])
+const data_soal = ref([])
 
 const pagesActive = ujianstudiPagesStore.getPagesActive;
 const getIdentitas = ujianstudiPagesStore.getIdentitas;
@@ -39,23 +58,23 @@ const doLogout = async () => {
 </script>
 <template>
     <aside :class="{ hidden: !isSideBarActive }" id="sidebar"
-    class="fixed z-20 h-full top-16 left-0 pt-4 flex lg:flex flex-shrink-0 flex-col w-64 lg:w-72 transition-width duration-75 bg-gray-50 shadow"
-    aria-label="Sidebar">
-    <div class="relative flex-1 flex flex-col min-h-0 ">
-        <div class="flex-1 flex flex-col  pb-4 overflow-y-auto">
-            <div class="flex-1 px-3 space-y-1">
-                <ul class="space-y-1 pb-2 lg:flex flex-wrap px-2 gap-0 justify-between">
-                    <li class="lg:w-full py-0" v-if="waktu > 0">
-                        <h3
-                            class="text-base-content font-bold rounded-lg flex items-center pt-4  group hover:link underline">
+        class="fixed z-20 h-full top-16 left-0 pt-4 flex lg:flex flex-shrink-0 flex-col w-64 lg:w-72 transition-width duration-75 bg-gray-50 shadow"
+        aria-label="Sidebar">
+        <div class="relative flex-1 flex flex-col min-h-0 ">
+            <div class="flex-1 flex flex-col  pb-4 overflow-y-auto">
+                <div class="flex-1 px-3 space-y-1">
+                    <ul class="space-y-1 pb-2 lg:flex flex-wrap px-2 gap-0 justify-between">
+                        <li class="lg:w-full py-0" v-if="waktu > 0">
+                            <h3
+                                class="text-base-content font-bold rounded-lg flex items-center pt-4  group hover:link underline">
                                 MENU UJIAN
                             </h3>
                         </li>
-                        <!-- {{ ujian_aktif }} -->
                         <span v-if="waktu > 0">
+                            <!-- {{ ujian_aktif.soal }} -->
                             <div class="w-full font-bold text-xs py-4">
                                 <div class="flex flex-wrap gap-2">
-                                    <span v-for="item, index in ujian_aktif.soal" :key="item.id">
+                                    <span v-for="item, index in data_soal" :key="item.id">
                                         <a class="btn btn-xs btn-info" v-if="item.kode_jawaban">{{ index + 1 }}. </a>
                                         <a class="btn btn-xs btn-warning">{{ index + 1 }}.
                                             <!-- {{ fnNumberToAlphabet(1) }} -->
@@ -63,30 +82,6 @@ const doLogout = async () => {
                                     </span>
                                 </div>
                             </div>
-                            <!-- <div class="flex flex-wrap gap-2">
-                                                                                            <span>
-                                                                                                <a class="btn btn-xs btn-info">01. A </a>
-                                                                                            </span>
-                                                                                            <span>
-                                                                                                <a class="btn btn-xs btn-info">02. A </a>
-                                                                                            </span>
-                                                                                            <span>
-                                                                                                <a class="btn btn-xs btn-info">03. C </a>
-                                                                                            </span>
-                                                                                            <span>
-                                                                                                <a class="btn btn-xs btn-info">04. D </a>
-                                                                                            </span>
-                                                                                            <span>
-                                                                                                <a class="btn btn-xs btn-info">04. D </a>
-                                                                                            </span>
-                                                                                            <span>
-                                                                                                <a class="btn btn-xs btn-info">04. D </a>
-                                                                                            </span>
-                                                                                            <span>
-                                                                                                <a class="btn btn-xs btn-info">04. D </a>
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    </div> -->
                         </span>
                         <span v-if="waktu > 0">
                             <button class="btn btn-error btn-md" @click="doSelesai()">
@@ -132,6 +127,7 @@ const doLogout = async () => {
                                 <span class="ml-3">Logout </span>
                             </span>
                         </li>
+                        <!-- {{ data_soal }} -->
                     </ul>
                 </div>
             </div>

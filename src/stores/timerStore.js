@@ -34,6 +34,11 @@ export const useTimerStore = defineStore("timerStore", () => {
 
   // Jalanakan Timer dengan base state interval agar tidak duplikat interval
   const interval = ref(null);
+
+  const doClearInterval = () => {
+    clearInterval(interval.value);
+    waktu.value = 0
+  }
   const doJalankanTimer = (total) => {
     clearInterval(interval.value);
     interval.value = setInterval(() => {
@@ -52,6 +57,7 @@ export const useTimerStore = defineStore("timerStore", () => {
       }
     }, 1000);
   };
+
   const doJalankanTimerV2_tgl_selesai = (tgl_selesai, aspek_detail_id, index) => {
     let dataProses = ujianstudiPagesStore.get_siswa_ujianstudi;
     if (dataProses[index].tgl_selesai == null) {
@@ -142,6 +148,7 @@ export const useTimerStore = defineStore("timerStore", () => {
     setWaktu,
     doJalankanTimer,
     doJalankanTimerV2_tgl_selesai,
+    doClearInterval,
     ujianTipe,
     getUjianTipe,
     setUjianTipe,

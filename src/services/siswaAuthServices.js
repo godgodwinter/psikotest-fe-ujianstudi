@@ -4,8 +4,10 @@ import ApiNode from "@/axios/axiosNode";
 import Toast from "@/components/lib/Toast.js";
 import { useSiswaAuthStore } from "@/stores/siswaAuthStore";
 import { useUjianstudiPagesStore } from "@/stores/ujianstudi/ujianstudiPagesStore";
+import { useTimerStore } from "@/stores/timerStore";
 const siswaAuthStore = useSiswaAuthStore();
 const ujianstudiPagesStore = useUjianstudiPagesStore();
+const timerStore = useTimerStore();
 
 const doLogin = async (username, password) => {
     try {
@@ -96,8 +98,9 @@ const doLogout = async (alert = true) => {
         localStorage.removeItem("siswa_isLogin");
         localStorage.removeItem("siswa_profile");
         localStorage.removeItem("siswa_isLogin");
+        timerStore.doClearInterval()
 
-
+        ujianstudiPagesStore.set_siswa_ujianstudi([])
         ujianstudiPagesStore.set_siswa_ujianstudi([])
         ujianstudiPagesStore.set_siswa_profile(null)
         // storeAdminAuth.setToken("");
