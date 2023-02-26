@@ -6,6 +6,7 @@ import Toast from "@/components/lib/Toast";
 import { useTimerStore } from "@/stores/timerStore";
 import moment from "moment/min/moment-with-locales";
 import localization from "moment/locale/id";
+import { defaultPendingLogin } from "@/components/lib/babengHelper";
 
 const LoadingNavbar = defineAsyncComponent(() =>
     import('@/components/alert/AlertLoading.vue')
@@ -49,6 +50,12 @@ const fn_delay_response = (args) => {
 
 setTimeout(fn_delay_response, 2000, 'argumen example');
 
+
+const goToSoal = (index, soal) => {
+    // ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(soal, index)
+    router.push({ name: 'studi-proses-soal', params: { index } })
+}
+
 const doMulai = () => {
     if (waktu.value == 0) {
         let tgl_mulai = moment();
@@ -66,7 +73,15 @@ const doMulai = () => {
 const onKlik = async (tgl_selesai, aspek_detail_id, index) => {
     await timerStore.doJalankanTimerV2_tgl_selesai(tgl_selesai, aspek_detail_id, index);
     await timerStore.doPeriksaUjianAktif();
+    goToSoal(0, 1)
 };
+
+
+const btnLoading = ref(true);
+const fnPending = (status) => {
+    btnLoading.value = false
+}
+setTimeout(fnPending, defaultPendingLogin, false);
 </script>
 <template>
     <div v-if="data">
@@ -115,9 +130,13 @@ const onKlik = async (tgl_selesai, aspek_detail_id, index) => {
             </div>
             <div>
                 <div class="w-full flex justify-center px-4">
+                    <button class="btn btn-lg bg-slate-500" v-if="btnLoading" disabled> <img
+                            src="@/assets/img/animate/native-loader-2.svg" class="text-white fill-current px-2" alt="">
+                        Processing ...</button>
+                    <span v-else> <button class="btn btn-lg btn-success" @click="doMulai()"
+                            v-if="data.tgl_mulai === null">Mulai</button>
+                        <button class="btn btn-lg btn-dark" v-else>Sudah dikerjakan</button></span>
 
-                    <button class="btn btn-lg btn-success" @click="doMulai()" v-if="data.tgl_mulai === null">Mulai</button>
-                    <button class="btn btn-lg btn-dark" v-else>Sudah dikerjakan</button>
                 </div>
             </div>
             <div class="divider"></div>

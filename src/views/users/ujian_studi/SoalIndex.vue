@@ -12,6 +12,11 @@ const router = useRouter()
 const data = ref(null)
 const index = ref(route.params.index)
 const no_soal = ref(parseInt(index.value) + 1)
+const loading = ref(true);
+
+const AlertLoading = defineAsyncComponent(() =>
+    import('@/components/alert/AlertLoading.vue')
+)
 
 timerStore.$subscribe(
     (mutation, state) => {
@@ -53,7 +58,7 @@ const fn_delay_response = async (args) => {
             ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(data.value, index.value)
         }
     }
-
+    loading.value = false
 }
 
 // const getSoal = async (dataMapel, index) => {
@@ -87,94 +92,99 @@ const doStoreData = (kode_jawaban) => {
 }
 </script>
 <template>
-    <div v-if="waktu > 0">
-        <div v-if="data">
+    <div v-if="loading">
+        <AlertLoading />
+    </div>
+    <div v-else>
+        <div v-if="waktu > 0">
+            <div v-if="data">
 
-            <div class="px-2 pt-2">
-                <div class="prose space-x-2">
-                    <!-- <h2 class="text-2xl font-bold">NO 1:</h2> -->
+                <div class="px-2 pt-2">
+                    <div class="prose space-x-2">
+                        <!-- <h2 class="text-2xl font-bold">NO 1:</h2> -->
 
-                    <button class="btn btn-outline gap-2">
-                        NO SOAL
-                        <!-- <div class="badge badge-info ">1</div> -->
-                        <span class="font-bold text-lg">{{ data.index + 1 }}</span>
-                    </button>
+                        <button class="btn btn-outline gap-2">
+                            NO SOAL
+                            <!-- <div class="badge badge-info ">1</div> -->
+                            <span class="font-bold text-lg">{{ data.index + 1 }}</span>
+                        </button>
 
-                    <!-- <button class="btn btn-primary gap-2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      BELUM DIJAWAB
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div class="badge badge-warning">5</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </button> -->
+                        <!-- <button class="btn btn-primary gap-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          BELUM DIJAWAB
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="badge badge-warning">5</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </button> -->
+                    </div>
                 </div>
-            </div>
 
-            <div class="m-4 pb-4 rounded shadow">
-                <div class="p-0">
-                    <div class="card w-full bg-info/10 shadow-xl text-justify">
-                        <div class="card-body">
-                            <span class=" font-bold ">Pertanyaan : </span>
-                            <span class="text-base" v-html="data.soal_pertanyaan">
-                            </span>
-                            <div class="divider"></div>
-                            <span class="font-extralight text-xs">
-                                <span class="font-bold">Jawaban tersimpan : </span>
-                                <!-- <span>{{ data.jawaban_tersimpan ? fnNumberToAlphabet(data.jawaban_tersimpan) : "-" }}</span> -->
-                                <!-- <div class="divider"></div> -->
-                                <span v-html="data?.paketsoal_pilihanjawaban?.jawaban">
-
+                <div class="m-4 pb-4 rounded shadow">
+                    <div class="p-0">
+                        <div class="card w-full bg-info/10 shadow-xl text-justify">
+                            <div class="card-body">
+                                <span class=" font-bold ">Pertanyaan : </span>
+                                <span class="text-base" v-html="data.soal_pertanyaan">
                                 </span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <!-- {{ linkStore }} -->
-                <div class="px-4 lg:px-10" v-if="data?.pilihanjawaban">
-                    <div class="p-4" v-for="item, index in data.pilihanjawaban" :key="item.id"
-                        @click="doStoreData(item.kode_jawaban)">
-                        <div class="card w-full bg-info shadow-md hover:shadow-lg text-justify"
-                            v-if="data?.kode_jawaban == item.kode_jawaban">
-                            <div class="card-body">
-                                <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
-                                <p class="text-base" v-html="item.pilihanjawaban_jawaban">
-                                </p>
-                            </div>
-                        </div>
-                        <div class="card w-full bg-base-200 shadow-md hover:shadow-lg text-justify " v-else>
-                            <div class="card-body">
-                                <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
-                                <p class="text-base" v-html="item.pilihanjawaban_jawaban">
-                                </p>
+                                <div class="divider"></div>
+                                <span class="font-extralight text-xs">
+                                    <span class="font-bold">Jawaban tersimpan : </span>
+                                    <!-- <span>{{ data.jawaban_tersimpan ? fnNumberToAlphabet(data.jawaban_tersimpan) : "-" }}</span> -->
+                                    <!-- <div class="divider"></div> -->
+                                    <span v-html="data?.paketsoal_pilihanjawaban?.jawaban">
+
+                                    </span>
+                                </span>
                             </div>
                         </div>
                     </div>
+                    <!-- {{ linkStore }} -->
+                    <div class="px-4 lg:px-10" v-if="data?.pilihanjawaban">
+                        <div class="p-4" v-for="item, index in data.pilihanjawaban" :key="item.id"
+                            @click="doStoreData(item.kode_jawaban)">
+                            <div class="card w-full bg-info shadow-md hover:shadow-lg text-justify"
+                                v-if="data?.kode_jawaban == item.kode_jawaban">
+                                <div class="card-body">
+                                    <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
+                                    <p class="text-base" v-html="item.pilihanjawaban_jawaban">
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="card w-full bg-base-200 shadow-md hover:shadow-lg text-justify " v-else>
+                                <div class="card-body">
+                                    <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
+                                    <p class="text-base" v-html="item.pilihanjawaban_jawaban">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
 
                 </div>
 
-            </div>
-
-            <!-- <div class="divider"></div> -->
-            <div class="pb-5">
-                <div class="w-full flex justify-end px-4 space-x-2">
-                    <button @click="goBack(no_soal)" v-if="no_soal > 1">
-                        <button class="btn btn-sm btn-accent">Sebelumnya</button>
-                    </button>
-                    <button @click="goNext(no_soal)" v-if="no_soal < data?.soal_jml">
-                        <button class="btn btn-sm btn-info">Selanjutnya</button>
-                    </button>
+                <!-- <div class="divider"></div> -->
+                <div class="pb-5">
+                    <div class="w-full flex justify-end px-4 space-x-2">
+                        <button @click="goBack(no_soal)" v-if="no_soal > 1">
+                            <button class="btn btn-sm btn-accent">Sebelumnya</button>
+                        </button>
+                        <button @click="goNext(no_soal)" v-if="no_soal < data?.soal_jml">
+                            <button class="btn btn-sm btn-info">Selanjutnya</button>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div v-else>
+        <div v-else>
 
-        <div class="alert alert-error shadow-lg">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    class="stroke-info flex-shrink-0 w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>Error! Task failed : </span>
-                <span> Waktu telah habis!</span>
+            <div class="alert alert-error shadow-lg">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        class="stroke-info flex-shrink-0 w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Error! Task failed : </span>
+                    <span> Waktu telah habis!</span>
+                </div>
             </div>
         </div>
     </div>

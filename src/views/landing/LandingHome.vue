@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { Form, Field } from "vee-validate";
 import fnValidasi from "@/components/lib/babengValidasi";
 import API from "@/services/siswaAuthServices";
+import { defaultPendingLogin } from "@/components/lib/babengHelper"
 // import Logo from "@/components/babeng/icons/babeng-logo.vue";
 // import MenuIcon from "@/components/babeng/icons/babeng-menu.vue";
 // import PlayButton from "@/components/babeng/icons/babeng-play-button.vue";
@@ -59,16 +60,36 @@ const features = [
 //     // }
 // };
 
+const fnPending = (status) => {
+    btnLoading.value = false
+}
+
+const btnLoading = ref(false);
 const username = ref(null);
 const password = ref(null);
 const doSubmit = async () => {
-    // console.log(username.value, password.value);
-    // router.push({ name: "ujian.psikotest.index" });
-    const res = await API.doLogin(username.value, password.value);
-    if (res === true) {
-        router.push({ name: "user-home" });
+    try {
+        btnLoading.value = true;
+        // console.log(username.value, password.value);
+        // router.push({ name: "ujian.psikotest.index" });
+        const res = await API.doLogin(username.value, password.value);
+        console.log('====================================');
+        console.log('respon');
+        console.log('====================================');
+        if (res === true) {
+            setTimeout(router.push({ name: "user-home" }), 2000, false);
+        }
+        setTimeout(fnPending, defaultPendingLogin, false);
+    } catch (error) {
+        setTimeout(fnPending, defaultPendingLogin, false);
+        console.error(error);
     }
 };
+const isLogin = ref(localStorage.getItem("siswa_isLogin") ? localStorage.getItem("siswa_isLogin") : "");
+if (isLogin.value) {
+    const btnLoading = ref(false);
+    router.push({ name: "studi-paket" });
+}
 </script>
 <template>
     <div class="w-full min-h-screen font-sans text-gray-900">
@@ -84,8 +105,8 @@ const doSubmit = async () => {
                             Home
                         </span>
                         <!-- <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-800">
-                                                                                                        Try now
-                                                                                                    </a> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Try now
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </a> -->
                     </nav>
                     <button class="p-4 md:hidden">
                         <MenuIcon class="w-6 h-6 text-gray-800" />
@@ -139,14 +160,21 @@ const doSubmit = async () => {
                                 <div class="text-xs text-red-600 mt-1">
                                     {{ errors.password }}
                                 </div>
-                                <!-- <input type="text" placeholder="Username" v-model="username"
-                                                                                                                      class="flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal" />
-                                                                                                                    <input type="text" placeholder="Password" v-model="password"
-                                                                                                                      class="flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal" /> -->
+                                <button type="button"
+                                    class="bg-slate-500 flex justify-center py-3 rounded-lg text-white space-x-2 " disabled
+                                    v-if="btnLoading">
+
+                                    <img src="@/assets/img/animate/native-loader-2.svg" class="text-white fill-current px-2"
+                                        alt="">
+                                    Processing ...
+                                </button>
                                 <button
-                                    class="flex items-center justify-center flex-none px-3 py-2 md:px-4 md:py-3 border-2 rounded-lg font-medium border-black bg-black text-white">
+                                    class="flex items-center justify-center flex-none px-3 py-2 md:px-4 md:py-3 border-2 rounded-lg font-medium border-black bg-black text-white"
+                                    v-else>
                                     Sign in
                                 </button>
+                                <!-- <img src="@/assets/img/animate/spinner-1.svg" alt=""> -->
+
                                 <div class="flex justify-center items-center">
                                     <span class="w-full border border-gray-100"></span>
                                     <!-- <span class="px-4">Or</span> -->

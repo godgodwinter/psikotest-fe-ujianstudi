@@ -2,6 +2,10 @@
 import moment from "moment/min/moment-with-locales";
 import localization from "moment/locale/id";
 moment.updateLocale("id", localization);
+
+export const defaultPendingLogin = 5000;
+export const defaultPendingSave = 3000;
+
 export const fn_get_sisa_waktu = (tgl_selesai) => {
     try {
         let result = {
@@ -65,3 +69,13 @@ export const fnNumberToAlphabet = (num) => {
     //   return Array(+digits.join("") + 1).join("") + alphabet;
     return (num + 9).toString(36).toUpperCase();
 };
+
+
+
+// export const fnDoPending = async (status = false, timer = 3000) => {
+//     return setTimeout(fnPending, timer, status);
+
+// }
+// const fnPending = async (status) => {
+//     return status
+// }
