@@ -7,6 +7,7 @@ import { useTimerStore } from "@/stores/timerStore";
 import moment from "moment/min/moment-with-locales";
 import localization from "moment/locale/id";
 import { defaultPendingLogin } from "@/components/lib/babengHelper";
+import Api from "@/axios/axiosNode";
 
 const LoadingNavbar = defineAsyncComponent(() =>
     import('@/components/alert/AlertLoading.vue')
@@ -65,15 +66,36 @@ const goToSoal = (index, soal) => {
     router.push({ name: 'studi-proses-soal', params: { index } })
 }
 
-const doMulai = () => {
+const doMulai = async () => {
+    btnLoading.value = true
     if (waktu.value == 0) {
         let tgl_mulai = moment();
         let tgl_selesai = moment(tgl_mulai).add(data.value.waktu, 'minutes')
         // console.log('====================================');
         // console.log(`mulai mapel_id ${aspek_detail_id.value} , index:${index.value}`);
         // console.log(`tgl_mulai ${tgl_mulai} tgl_selesai ${tgl_selesai}`);
+
         // console.log('====================================');
-        onKlik(tgl_selesai, aspek_detail_id.value, index.value)
+        // onKlik(tgl_selesai, aspek_detail_id.value, index.value)
+        try {
+            let dataFormSend = {
+                tgl_mulai: moment(tgl_mulai).format(),
+                tgl_selesai: moment(tgl_selesai).format(),
+            }
+            // console.log('====================================');
+            // console.log(dataFormSend);
+            // console.log('====================================');
+            const response = await Api.post(`siswa/ujianstudi/aspek_detail/${aspek_detail_id.value}/mulai`, dataFormSend);
+            // console.log(response);
+            Toast.success("Info", "Berhasil memulai !");
+            onKlik(tgl_selesai, aspek_detail_id.value, index.value)
+            setTimeout(fnPending, defaultPendingLogin, false);
+            return true;
+        } catch (error) {
+            setTimeout(fnPending, defaultPendingLogin, false);
+            console.error(error);
+        }
+        setTimeout(fnPending, defaultPendingLogin, false);
     } else {
         Toast.warning("Gagal memulai", "Selesaikan paket aktif terlebih dahulu!")
     }

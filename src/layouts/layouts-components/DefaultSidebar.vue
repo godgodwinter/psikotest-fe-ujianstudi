@@ -1,5 +1,6 @@
 <script setup>
 import Api from "@/axios/axios";
+import ApiNode from "@/axios/axiosNode";
 import { computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { ref } from "vue";
@@ -119,6 +120,22 @@ const doSelesai = async () => {
         ujianstudiPagesStore.set_siswa_ujianstudi(dataMapel)
         ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(null)
         ujianstudiPagesStore.set_siswa_ujianstudi_aktif(null)
+
+        try {
+            let dataFormSend = {
+            }
+            const response = await ApiNode.post(`siswa/ujianstudi/aspek_detail/${dataMapel_aktif.id}/finish`, dataFormSend);
+            // console.log(response);
+            // Toast.success("Info", "Berhasil memulai !");
+            // onKlik(tgl_selesai, aspek_detail_id.value, index.value)
+            // setTimeout(fnPending, defaultPendingLogin, false);
+            console.log("ujian berhasil diakhiri");
+            // return true;
+        } catch (error) {
+            // setTimeout(fnPending, defaultPendingLogin, false);
+            console.log("ujian gagal diakhiri");
+            console.error(error);
+        }
         Toast.danger("Warning", " Ujian berhasil diakhiri!");
         router.push({
             name: "studi-paket",
