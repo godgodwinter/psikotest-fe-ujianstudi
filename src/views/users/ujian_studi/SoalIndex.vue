@@ -20,7 +20,8 @@ const AlertLoading = defineAsyncComponent(() =>
 
 const buttonSaveDisabled = ref(3)
 timerStore.do_run_disabled_button_save()
-console.log(buttonSaveDisabled.value);
+// console.log(buttonSaveDisabled.value);
+const soal_index = ref(0);
 
 timerStore.$subscribe(
     (mutation, state) => {
@@ -35,7 +36,7 @@ timerStore.$subscribe(
         }
         waktu.value = timerStore.getWaktu;
         buttonSaveDisabled.value = timerStore.get_buttonSaveLoading;
-        console.log(buttonSaveDisabled.value);
+        // console.log(buttonSaveDisabled.value);
     },
     { detached: false }
 ); //jika detached true :terpisah m
@@ -48,10 +49,13 @@ ujianstudiPagesStore.$subscribe(
         // console.log('====================================');
         // console.log("here", ujianstudiPagesStore.get_siswa_ujianstudi_soal_aktif);
         data.value = ujianstudiPagesStore.get_siswa_ujianstudi_soal_aktif;
+        soal_index.value = ujianstudiPagesStore.get_soal_index;
     },
     { detached: false }
 ); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
 
+const soal_jml = ref(0);
+const dataMapel_aktif = ref(ujianstudiPagesStore.get_siswa_ujianstudi_aktif);
 const fn_delay_response = async (args) => {
     // console.log(ujianstudiPagesStore.get_siswa_ujianstudi_aktif);
     // data.value = await getSoal(ujianstudiPagesStore.get_siswa_ujianstudi_aktif, index.value)
@@ -65,6 +69,9 @@ const fn_delay_response = async (args) => {
         }
     }
     loading.value = false
+    dataMapel_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif;
+    soal_jml.value = dataMapel_aktif.value?.soal?.length;
+    // console.log("datamapel", dataMapel_aktif.value.soal[soal_index.value + 1]);
 }
 
 // const getSoal = async (dataMapel, index) => {
@@ -98,6 +105,22 @@ const doStoreData = (kode_jawaban) => {
     // console.log(getMapelAktif);
 
 }
+
+
+const goToSoal = (index, soal) => {
+    ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(soal, index)
+    timerStore.do_run_disabled_button_save()
+    router.push({ name: 'studi-proses-soal', params: { index } })
+}
+
+const goBack = (indexNow) => {
+    let indexNext = parseInt(indexNow) - 1;
+    goToSoal(indexNext, dataMapel_aktif.value.soal[(soal_index.value) - 1])
+}
+const goNext = (indexNow) => {
+    let indexNext = parseInt(indexNow) + 1;
+    goToSoal(indexNext, dataMapel_aktif.value.soal[(soal_index.value) + 1])
+}
 </script>
 <template>
     <div v-if="loading">
@@ -118,9 +141,9 @@ const doStoreData = (kode_jawaban) => {
                         </button>
 
                         <!-- <button class="btn btn-primary gap-2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  BELUM DIJAWAB
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="badge badge-warning">5</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              BELUM DIJAWAB
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="badge badge-warning">5</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </button> -->
                     </div>
                 </div>
 
@@ -199,12 +222,14 @@ const doStoreData = (kode_jawaban) => {
 
                 <!-- <div class="divider"></div> -->
                 <div class="pb-5">
+                    <!-- {{ soal_index }} -
+                        {{ soal_jml }} -->
                     <div class="w-full flex justify-end px-4 space-x-2">
-                        <button @click="goBack(no_soal)" v-if="no_soal > 1">
+                        <button @click="goBack(soal_index)" v-if="soal_index > 0">
                             <button class="btn btn-sm btn-accent">Sebelumnya</button>
                         </button>
-                        <button @click="goNext(no_soal)" v-if="no_soal < data?.soal_jml">
-                            <button class="btn btn-sm btn-info">Selanjutnya</button>
+                        <button @click="goNext(soal_index)" v-if="soal_index < parseInt(soal_jml) - 1">
+                            <button class="btn btn-sm btn-info">Selanjutnya </button>
                         </button>
                     </div>
                 </div>

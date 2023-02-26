@@ -15,17 +15,25 @@ moment.updateLocale("id", localization);
 const ujianstudiPagesStore = useUjianstudiPagesStore();
 const router = useRouter();
 const timerStore = useTimerStore();
+const fn_delay_redirect = (state) => {
+    // console.log('====================================');
+    // console.log(state.waktu);
+    // console.log('====================================');
+    if (state.waktu == 0) {
+        // getData();
+        // ujian_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif
+        // data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
+        router.push({
+            name: "studi-paket",
+            // params: { aspek_id: id }
+        });
+    }
+}
 timerStore.$subscribe(
     (mutation, state) => {
-        if (state.waktu == 0) {
-            // getData();
-            // ujian_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif
-            // data_soal.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif.soal
-            router.push({
-                name: "studi-paket",
-                // params: { aspek_id: id }
-            });
-        }
+        // setTimeout(fn_delay_redirect(state), 2000, 'argumen example');
+        fn_delay_redirect(state)
+
         waktu.value = timerStore.getWaktu;
     },
     { detached: false }

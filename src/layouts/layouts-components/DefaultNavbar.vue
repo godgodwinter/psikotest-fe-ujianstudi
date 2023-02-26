@@ -46,6 +46,23 @@ timerStore.doPeriksaUjianAktif();
 const toggleSideBar = () => {
     ujianstudiPagesStore.toggleSideBar();
 }
+
+const dataMapel_aktif = ref(ujianstudiPagesStore.get_siswa_ujianstudi_aktif);
+ujianstudiPagesStore.$subscribe(
+    (mutation, state) => {
+        dataMapel_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif;
+    },
+    { detached: false }
+); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
+
+const goToSoal = (index, soal) => {
+    ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(soal, index)
+    router.push({ name: 'studi-proses-soal', params: { index } })
+}
+
+const doResume = () => {
+    goToSoal(0, dataMapel_aktif.value.soal[0])
+}
 </script>
 <template>
     <div class="navbar bg-gradient-to-b from-[#d1f6e1] to-white border-b-2 border-gray-50 fixed z-30 w-full top-0">
@@ -71,11 +88,13 @@ const toggleSideBar = () => {
         <div class="navbar-center hidden lg:flex">
         </div>
         <div class="navbar-end space-x-2">
-            <span class="px-4 font-bold text-slate-600" v-if="waktu > 120">
-                {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}</span>
-            <span class="px-4 font-bold text-red-600" v-else-if="waktu > 0">
-                {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}</span>
-            <span v-else></span>
+            <div @click="doResume()"> <span class="font-bold text-sm underline" v-if="waktu > 0"> SOAL</span>
+                <span class="px-4 font-bold text-slate-600" v-if="waktu > 120">
+                    {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}</span>
+                <span class="px-4 font-bold text-red-600" v-else-if="waktu > 0">
+                    {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}</span>
+                <span v-else></span>
+            </div>
         </div>
     </div>
 </template>

@@ -150,7 +150,7 @@ export const useTimerStore = defineStore("timerStore", () => {
   const intervalButtonSave = ref(0)
   const do_run_disabled_button_save = (waktu = defaultButtonSaveTimer.value) => { //! run on first load pages or after button clicked
     clearInterval(intervalButtonSave.value);
-    console.log("store: run buton disable");
+    // console.log("store: run buton disable");
     let total = waktu;
     do_jalankan_timer_save(total)
   }
@@ -162,7 +162,7 @@ export const useTimerStore = defineStore("timerStore", () => {
       if (total === 0) {
         clearInterval(intervalButtonSave.value);
         // Toast.danger("Warning", "Save aktif!");
-        console.log("store: Save aktif");
+        // console.log("store: Save aktif");
         // const router = useRouter();
         // router.push({
         //   name: "studi-paket",
@@ -171,7 +171,7 @@ export const useTimerStore = defineStore("timerStore", () => {
       } else {
         total--;
         buttonSaveLoading.value = total;
-        console.log('store: ' + buttonSaveLoading.value)
+        // console.log('store: ' + buttonSaveLoading.value)
       }
     }, 1000);
   };

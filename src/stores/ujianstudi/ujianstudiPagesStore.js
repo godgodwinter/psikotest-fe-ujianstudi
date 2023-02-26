@@ -45,7 +45,8 @@ export const useUjianstudiPagesStore = defineStore("ujianstudiPagesStore", () =>
     const get_siswa_ujianstudi_soal_aktif = computed(() => siswa_ujianstudi_soal_aktif.value)
     const set_siswa_ujianstudi_soal_aktif = (item, index = 0, is_updated = false) => {
         if (item) {
-            console.log(item);
+            soal_index.value = index;
+            // console.log(item);
             item.index = index
             siswa_ujianstudi_soal_aktif.value = item;
             // // console.log('====================================');
@@ -70,6 +71,12 @@ export const useUjianstudiPagesStore = defineStore("ujianstudiPagesStore", () =>
 
     }
 
+    const soal_index = ref(0);
+    const set_soal_index = (index) => {
+        soal_index.value = index;
+    }
+    const get_soal_index = computed(() => soal_index.value)
+
     return {
         isSidebarActive,
         getIsSidebarActive,
@@ -87,6 +94,9 @@ export const useUjianstudiPagesStore = defineStore("ujianstudiPagesStore", () =>
         siswa_ujianstudi_soal_aktif,
         get_siswa_ujianstudi_soal_aktif,
         set_siswa_ujianstudi_soal_aktif,
+        get_soal_index,
+        set_soal_index,
+        soal_index
 
     };
 });

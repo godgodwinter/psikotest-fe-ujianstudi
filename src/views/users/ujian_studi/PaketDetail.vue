@@ -24,6 +24,7 @@ timerStore.$subscribe(
     { detached: false }
 ); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
 
+
 const waktu = computed(() => timerStore.getWaktu);
 
 const router = useRouter()
@@ -33,6 +34,14 @@ const index = ref(route.params.index)
 const ujianstudiPagesStore = useUjianstudiPagesStore();
 const data = ref(null)
 const data_asli = ref(ujianstudiPagesStore.get_siswa_ujianstudi)
+
+const dataMapel_aktif = ref(ujianstudiPagesStore.get_siswa_ujianstudi_aktif);
+ujianstudiPagesStore.$subscribe(
+    (mutation, state) => {
+        dataMapel_aktif.value = ujianstudiPagesStore.get_siswa_ujianstudi_aktif;
+    },
+    { detached: false }
+); //jika detached true :terpisah meskipun komponent di unmount subcrib tetap dijalankan [bug jika halaman di buka 2x akan dieksekusi 2x]
 
 const getData = () => {
     try {
@@ -52,7 +61,7 @@ setTimeout(fn_delay_response, 2000, 'argumen example');
 
 
 const goToSoal = (index, soal) => {
-    // ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(soal, index)
+    ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(soal, index)
     router.push({ name: 'studi-proses-soal', params: { index } })
 }
 
@@ -73,7 +82,8 @@ const doMulai = () => {
 const onKlik = async (tgl_selesai, aspek_detail_id, index) => {
     await timerStore.doJalankanTimerV2_tgl_selesai(tgl_selesai, aspek_detail_id, index);
     await timerStore.doPeriksaUjianAktif();
-    goToSoal(0, 1)
+
+    goToSoal(0, dataMapel_aktif.value.soal[0])
 };
 
 
@@ -135,7 +145,8 @@ setTimeout(fnPending, defaultPendingLogin, false);
                         Processing ...</button>
                     <span v-else> <button class="btn btn-lg btn-success" @click="doMulai()"
                             v-if="data.tgl_mulai === null">Mulai</button>
-                        <button class="btn btn-lg btn-dark" v-else>Sudah dikerjakan</button></span>
+                        <button class="btn btn-lg btn-dark" v-else>Sudah
+                            dikerjakan</button></span>
 
                 </div>
             </div>
