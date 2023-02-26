@@ -67,6 +67,7 @@ const doLogout = async () => {
 };
 const goToSoal = (index, soal) => {
     ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(soal, index)
+    timerStore.do_run_disabled_button_save()
     router.push({ name: 'studi-proses-soal', params: { index } })
 }
 

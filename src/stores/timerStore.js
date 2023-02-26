@@ -142,6 +142,41 @@ export const useTimerStore = defineStore("timerStore", () => {
       console.log(error.message);
     }
   }
+
+  const defaultButtonSaveTimer = ref(3)
+
+  const buttonSaveLoading = ref(3) //! global state disble button , if >0 button save disable 
+  const get_buttonSaveLoading = computed(() => buttonSaveLoading.value)
+  const intervalButtonSave = ref(0)
+  const do_run_disabled_button_save = (waktu = defaultButtonSaveTimer.value) => { //! run on first load pages or after button clicked
+    clearInterval(intervalButtonSave.value);
+    console.log("store: run buton disable");
+    let total = waktu;
+    do_jalankan_timer_save(total)
+  }
+
+  const do_jalankan_timer_save = (total) => {
+    buttonSaveLoading.value = 3;
+    clearInterval(intervalButtonSave.value);
+    intervalButtonSave.value = setInterval(() => {
+      if (total === 0) {
+        clearInterval(intervalButtonSave.value);
+        // Toast.danger("Warning", "Save aktif!");
+        console.log("store: Save aktif");
+        // const router = useRouter();
+        // router.push({
+        //   name: "studi-paket",
+        //   // params: { aspek_id: id }
+        // });
+      } else {
+        total--;
+        buttonSaveLoading.value = total;
+        console.log('store: ' + buttonSaveLoading.value)
+      }
+    }, 1000);
+  };
+
+
   return {
     waktu,
     getWaktu,
@@ -153,7 +188,10 @@ export const useTimerStore = defineStore("timerStore", () => {
     ujianTipe,
     getUjianTipe,
     setUjianTipe,
-    doPeriksaUjianAktif
+    doPeriksaUjianAktif,
+    buttonSaveLoading,
+    get_buttonSaveLoading,
+    do_run_disabled_button_save,
 
   };
 });

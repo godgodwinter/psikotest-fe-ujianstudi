@@ -18,6 +18,10 @@ const AlertLoading = defineAsyncComponent(() =>
     import('@/components/alert/AlertLoading.vue')
 )
 
+const buttonSaveDisabled = ref(3)
+timerStore.do_run_disabled_button_save()
+console.log(buttonSaveDisabled.value);
+
 timerStore.$subscribe(
     (mutation, state) => {
         if (state.waktu == 0) {
@@ -30,6 +34,8 @@ timerStore.$subscribe(
             // });
         }
         waktu.value = timerStore.getWaktu;
+        buttonSaveDisabled.value = timerStore.get_buttonSaveLoading;
+        console.log(buttonSaveDisabled.value);
     },
     { detached: false }
 ); //jika detached true :terpisah m
@@ -71,6 +77,7 @@ const fn_delay_response = async (args) => {
 setTimeout(fn_delay_response, 2000, 'argumen example');
 
 const doStoreData = (kode_jawaban) => {
+    buttonSaveDisabled.value = 5;
     // console.log(kode_jawaban);
     let getMapelAktif = ujianstudiPagesStore.get_siswa_ujianstudi_aktif;
     // console.log(getMapelAktif, ujianstudiPagesStore.get_siswa_ujianstudi_soal_aktif);
@@ -80,6 +87,7 @@ const doStoreData = (kode_jawaban) => {
             ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(getMapelAktif.soal[index_soal], index_soal, true);
         }
     }
+    timerStore.do_run_disabled_button_save()
 
     // ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(getMapelAktif.soal, true);
     // Toast.babeng("Info", "Jawaban berhasil disimpan")
@@ -110,9 +118,9 @@ const doStoreData = (kode_jawaban) => {
                         </button>
 
                         <!-- <button class="btn btn-primary gap-2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          BELUM DIJAWAB
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="badge badge-warning">5</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  BELUM DIJAWAB
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="badge badge-warning">5</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </button> -->
                     </div>
                 </div>
 
@@ -125,7 +133,15 @@ const doStoreData = (kode_jawaban) => {
                                 </span>
                                 <div class="divider"></div>
                                 <span class="font-extralight text-xs">
-                                    <span class="font-bold">Jawaban tersimpan : </span>
+                                    <span class="font-bold">Status tombol simpan :
+                                        <span class="text-error font-bold" v-if="buttonSaveDisabled > 0">
+                                            Mohon Tunggu ! <img src="@/assets/img/animate/native-loader-2.svg"
+                                                class="text-white fill-current px-2" alt="">
+                                        </span>
+                                        <span class="text-success font-bold" v-else>
+                                            Bisa menyimpan!
+                                        </span>
+                                    </span>
                                     <!-- <span>{{ data.jawaban_tersimpan ? fnNumberToAlphabet(data.jawaban_tersimpan) : "-" }}</span> -->
                                     <!-- <div class="divider"></div> -->
                                     <span v-html="data?.paketsoal_pilihanjawaban?.jawaban">
@@ -137,23 +153,44 @@ const doStoreData = (kode_jawaban) => {
                     </div>
                     <!-- {{ linkStore }} -->
                     <div class="px-4 lg:px-10" v-if="data?.pilihanjawaban">
-                        <div class="p-4" v-for="item, index in data.pilihanjawaban" :key="item.id"
-                            @click="doStoreData(item.kode_jawaban)">
-                            <div class="card w-full bg-info shadow-md hover:shadow-lg text-justify"
-                                v-if="data?.kode_jawaban == item.kode_jawaban">
-                                <div class="card-body">
-                                    <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
-                                    <p class="text-base" v-html="item.pilihanjawaban_jawaban">
-                                    </p>
+                        <div class="p-4" v-for="item, index in data.pilihanjawaban" :key="item.id">
+                            <span v-if="buttonSaveDisabled > 0">
+                                <div class="card w-full bg-slate-500 shadow-md hover:shadow-lg text-justify"
+                                    v-if="data?.kode_jawaban == item.kode_jawaban">
+                                    <div class="card-body">
+
+                                        <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
+                                        <p class="text-base" v-html="item.pilihanjawaban_jawaban">
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card w-full bg-base-200 shadow-md hover:shadow-lg text-justify " v-else>
-                                <div class="card-body">
-                                    <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
-                                    <p class="text-base" v-html="item.pilihanjawaban_jawaban">
-                                    </p>
+                                <div class="card w-full bg-slate-500 shadow-md hover:shadow-lg text-justify " v-else>
+                                    <div class="card-body">
+                                        <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
+
+                                        <p class="text-base" v-html="item.pilihanjawaban_jawaban">
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            </span>
+                            <span @click="doStoreData(item.kode_jawaban)" v-else>
+                                <div class="card w-full bg-info shadow-md hover:shadow-lg text-justify"
+                                    v-if="data?.kode_jawaban == item.kode_jawaban">
+                                    <div class="card-body">
+                                        <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
+                                        <p class="text-base" v-html="item.pilihanjawaban_jawaban">
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="card w-full bg-base-200 shadow-md hover:shadow-lg text-justify " v-else>
+                                    <div class="card-body">
+                                        <span class=" font-bold ">{{ fnNumberToAlphabet(index + 1) }} . </span>
+                                        <p class="text-base" v-html="item.pilihanjawaban_jawaban">
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </span>
                         </div>
 
                     </div>
