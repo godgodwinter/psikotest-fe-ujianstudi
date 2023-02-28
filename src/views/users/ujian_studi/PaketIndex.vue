@@ -3,12 +3,22 @@ import { ref, computed, defineAsyncComponent } from "vue"
 import { useUjianstudiPagesStore } from "@/stores/ujianstudi/ujianstudiPagesStore";
 import { useRouter } from "vue-router";
 import { fn_get_sisa_waktu } from "@/components/lib/babengHelper"
+import { useTimerStore } from "@/stores/timerStore";
+import Toast from "@/components/lib/Toast";
+import API from "@/services/siswaAuthServices";
 import moment from "moment/min/moment-with-locales";
 import localization from "moment/locale/id";
 moment.updateLocale("id", localization);
 const router = useRouter()
 const ujianstudiPagesStore = useUjianstudiPagesStore();
-
+const waktu = ref(1);
+const timerStore = useTimerStore();
+timerStore.$subscribe(
+    (mutation, state) => {
+        waktu.value = timerStore.getWaktu;
+    },
+    { detached: false }
+); //jika detached
 const profile = computed(() => ujianstudiPagesStore.get_siswa_profile)
 const ujianStudi = computed(() => ujianstudiPagesStore.siswa_ujianstudi)
 const AlertFailed = defineAsyncComponent(() =>
@@ -31,20 +41,44 @@ let arr = [{
 const export_nama = ref(`${moment().format("YYYY_MM_DD-")}-${profile.value.id}-${profile.value.nama}`)
 
 const exportJson = () => {
-    let dataExport = {
-        profile: profile.value,
-        dataUjian: ujianStudi.value
-    }
-    const data = JSON.stringify(dataExport)
-    const blob = new Blob([data], { type: 'text/plain' })
-    const e = document.createEvent('MouseEvents'),
-        a = document.createElement('a');
-    a.download = `${export_nama.value}.json`;
-    a.href = window.URL.createObjectURL(blob);
-    a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
-    e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-    a.dispatchEvent(e);
+    if (confirm("Apakah anda yakin export data ini?")) {
+        let dataExport = {
+            profile: profile.value,
+            dataUjian: ujianStudi.value
+        }
+        const data = JSON.stringify(dataExport)
+        const blob = new Blob([data], { type: 'text/plain' })
+        const e = document.createEvent('MouseEvents'),
+            a = document.createElement('a');
+        a.download = `${export_nama.value}.json`;
+        a.href = window.URL.createObjectURL(blob);
+        a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+        e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        a.dispatchEvent(e);
+    };
 }
+const refreshDataUjian = async () => {
+    if (confirm("Apakah anda yakin refresh data ini?")) {
+        if (waktu.value < 0) {
+            //! timer harus 0
+            console.log('====================================');
+            console.log("refresh Data");
+            console.log('====================================');
+
+            const res = await API.getAspekDetail();
+            data.value = ujianstudiPagesStore.get_siswa_ujianstudi || [];
+        } else {
+            Toast.babeng("Gagal", "Selesaikan proses aktif terlebih dahulu")
+        }
+    };
+}
+const fn_waktu_default = () => {
+    waktu.value = 0;
+    // console.log('====================================');
+    // console.log(waktu.value);
+    // console.log('====================================');
+}
+setTimeout(fn_waktu_default, 3000, false);
 </script>
 <template>
     <div class="p-4" v-if="data.length < 1">
@@ -60,8 +94,10 @@ const exportJson = () => {
         </div>
     </div>
     <div class="py-10 p-4 mx-2 rounded-lg border" v-else>
-        <div class="py-2">
-            <button class="btn btn-warning btn-sm" @click="exportJson()">Export Data Ujian</button>
+        <div class="py-2 space-x-2">
+            <!-- <button class="btn btn-warning btn-sm" @click="exportJson()">Export Data Ujian</button> -->
+            <!-- {{ waktu }} -->
+            <button class="btn btn-error btn-sm" @click="refreshDataUjian()">Refresh Data Ujian</button>
         </div>
         <div class="overflow-x-auto">
             <table class="table table-compact w-full">
@@ -73,7 +109,7 @@ const exportJson = () => {
                         <th>Status</th>
                         <th>Waktu Pengerjaan</th>
                         <th>Jumlah Soal</th>
-                        <th>Tipe</th>
+                        <!-- <th>Tipe</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -91,7 +127,7 @@ const exportJson = () => {
                                 <button class="btn btn-info btn-sm" @click="doMulai(item.id, index)">MULAI</button>
                             </span>
                             <!-- <button class="btn btn-warning" v-else-if="item.status == 'selesai'">SELESAI</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
 
                         </td>
                         <th>{{ item.aspek_detail_nama }}</th>
@@ -100,12 +136,15 @@ const exportJson = () => {
                                 <span v-if="fn_get_sisa_waktu(item.tgl_selesai).detik > 0">Aktif</span>
                                 <span v-else>SELESAI</span>
                             </span>
-                            <span v-else>Belum</span>
+                            <span v-else>Belum
+
+                                - {{ item.status }}
+                            </span>
 
                         </td>
                         <td>{{ item.waktu }} menit</td>
                         <td>{{ item.soal.length }} soal</td>
-                        <td>UJIAN STUDI</td>
+                        <!-- <td>UJIAN STUDI</td> -->
                     </tr>
                 </tbody>
             </table>

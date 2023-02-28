@@ -89,7 +89,10 @@ const doMulai = async () => {
             // console.log(response);
             Toast.success("Info", "Berhasil memulai !");
             onKlik(tgl_selesai, aspek_detail_id.value, index.value)
-            setTimeout(fnPending, defaultPendingLogin, false);
+            setTimeout(fnPending, 2000, false);
+
+            // await setTimeout(btnLoading.value = false, 2000, 'argumen example');
+
             return true;
         } catch (error) {
             setTimeout(fnPending, defaultPendingLogin, false);
@@ -104,6 +107,12 @@ const doMulai = async () => {
 const onKlik = async (tgl_selesai, aspek_detail_id, index) => {
     await timerStore.doJalankanTimerV2_tgl_selesai(tgl_selesai, aspek_detail_id, index);
     await timerStore.doPeriksaUjianAktif();
+
+    // goToSoal(0, dataMapel_aktif.value.soal[0])
+};
+const goToMulai = async () => {
+    // await timerStore.doJalankanTimerV2_tgl_selesai(tgl_selesai, aspek_detail_id, index);
+    // await timerStore.doPeriksaUjianAktif();
 
     goToSoal(0, dataMapel_aktif.value.soal[0])
 };
@@ -165,10 +174,9 @@ setTimeout(fnPending, defaultPendingLogin, false);
                     <button class="btn btn-lg bg-slate-500" v-if="btnLoading" disabled> <img
                             src="@/assets/img/animate/native-loader-2.svg" class="text-white fill-current px-2" alt="">
                         Processing ...</button>
-                    <span v-else> <button class="btn btn-lg btn-success" @click="doMulai()"
-                            v-if="data.tgl_mulai === null">Mulai</button>
-                        <button class="btn btn-lg btn-dark" v-else>Sudah
-                            dikerjakan</button></span>
+                    <span v-else> <button class="btn btn-lg btn-primary" @click="doMulai()"
+                            v-if="data.tgl_mulai === null">Daftar</button>
+                        <button class="btn btn-lg btn-success" v-else @click="goToMulai()">Lihat Soal</button></span>
 
                 </div>
             </div>

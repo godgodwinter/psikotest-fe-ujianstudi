@@ -116,6 +116,7 @@ const doLogout = async (alert = true) => {
 
 const API = {
     doLogin,
+    getAspekDetail,
     doCheckToken,
     doLogout,
 };
