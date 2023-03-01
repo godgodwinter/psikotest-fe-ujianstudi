@@ -71,6 +71,19 @@ export const fnNumberToAlphabet = (num) => {
 };
 
 
+export const do_jalankan_timer_reset = async (counter = 0) => {
+    if (counter < durasi_tunggu.value) {
+        setTimeout(function () {
+            interval_reset_timer.value--;
+            counter++;
+            // console.log(counter);
+            do_jalankan_timer_reset(counter);
+        }, 1000);
+    }
+    // setTimeout(do_aktivkan_reset, total, false);
+}
+// do_jalankan_timer_reset(0); //cara memanggil timer
+
 
 // export const fnDoPending = async (status = false, timer = 3000) => {
 //     return setTimeout(fnPending, timer, status);

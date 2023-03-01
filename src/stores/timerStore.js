@@ -176,7 +176,34 @@ export const useTimerStore = defineStore("timerStore", () => {
     }, 1000);
   };
 
+  // const interval_reset_timer = ref(0)
+  // const reset_timer_batas = ref(localStorage.getItem("reset_timer_batas") ? JSON.parse(localStorage.getItem("reset_timer_batas")) : null);
+  // const get_interval_reset_timer = computed(() => interval_reset_timer.value);
+  // const set_reset_timer_batas = () => {
+  //   let item = moment().add(5, 'minutes');
+  //   console.log('====================================');
+  //   console.log(item);
+  //   console.log('====================================');
+  //   localStorage.setItem("reset_timer_batas", JSON.stringify(item))
+  //   reset_timer_batas.value = item;
+  // };
+  // const do_run_reset_timer = async () => {
+  //   let get_detik = await fn_get_sisa_waktu(reset_timer_batas.value)
+  //   do_jalankan_timer_reset(get_detik.detik)
+  // }
 
+  // const do_jalankan_timer_reset = async (total) => {
+  //   clearInterval(interval_reset_timer.value);
+  //   interval_reset_timer.value = setInterval(() => {
+  //     if (total === 0) {
+  //       clearInterval(interval_reset_timer.value);
+  //     } else {
+  //       total--;
+  //       interval_reset_timer.value = total;
+  //       console.log('store: ' + interval_reset_timer.value)
+  //     }
+  //   }, 1000);
+  // }
   return {
     waktu,
     getWaktu,
@@ -192,6 +219,10 @@ export const useTimerStore = defineStore("timerStore", () => {
     buttonSaveLoading,
     get_buttonSaveLoading,
     do_run_disabled_button_save,
+    // reset_timer_batas,
+    // get_interval_reset_timer,
+    // set_reset_timer_batas,
+    // do_run_reset_timer, do_jalankan_timer_reset
 
   };
 });

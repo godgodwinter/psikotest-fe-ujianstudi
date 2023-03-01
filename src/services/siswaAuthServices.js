@@ -28,6 +28,8 @@ const doLogin = async (username, password) => {
             // console.log(decoded);
             await getProfile();
             await getAspekDetail();
+            // await timerStore.set_reset_timer_batas();
+            // await timerStore.do_run_reset_timer()
             Toast.success("Success", "Login Berhasil!");
         } else {
             Toast.danger("Warning", "Login gagal!");
