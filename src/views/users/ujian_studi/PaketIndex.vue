@@ -13,7 +13,7 @@ const router = useRouter()
 const ujianstudiPagesStore = useUjianstudiPagesStore();
 const waktu = ref(1);
 const timerStore = useTimerStore();
-const durasi_tunggu = ref(60); //1menit
+const durasi_tunggu = ref(30); //1menit
 const loading = ref(true);
 const interval_reset_timer = ref(durasi_tunggu.value);
 
@@ -181,7 +181,7 @@ setTimeout(fn_waktu_default, 3000, false);
                                     <button class="btn btn-info btn-sm" @click="doMulai(item.id, index)">MULAI</button>
                                 </span>
                                 <!-- <button class="btn btn-warning" v-else-if="item.status == 'selesai'">SELESAI</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
 
                             </td>
                             <th>{{ item.aspek_detail_nama }}</th>
