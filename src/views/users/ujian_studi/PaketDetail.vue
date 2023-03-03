@@ -142,19 +142,19 @@ setTimeout(fnPending, defaultPendingLogin, false);
 
             <div class="divider"></div>
             <div class=" bg-gray-100 m-1 p-3 rounded-md text-justify w-full" v-if="data.instruksi_status == 'Aktif'">
-                <article class="prose">
+                <article class="prose ">
                     <h2>INSTRUKSI :</h2>
 
-                    <span v-html="data.instruksi"></span>
+                    <span class="w-full" v-html="data.instruksi"></span>
                 </article>
             </div>
             <div class="divider"></div>
             <div v-if="data.lembar_prasoal_status == 'Aktif'">
                 <div class=" bg-gray-100 m-1 p-3 rounded-md text-justify w-full">
-                    <article class="prose">
+                    <article class="prose ">
                         <h2>LEMBAR PRASOAL :</h2>
 
-                        <span v-html="data.lembar_prasoal"></span>
+                        <span class="w-full" v-html="data.lembar_prasoal"></span>
                     </article>
                 </div>
                 <div class="divider"></div>
@@ -164,7 +164,7 @@ setTimeout(fnPending, defaultPendingLogin, false);
                     <article class="prose">
                         <h2>INSTRUKSI PENGERJAAN :</h2>
 
-                        <span v-html="data.instruksi_pengerjaan"></span>
+                        <span class="w-full" v-html="data.instruksi_pengerjaan"></span>
                     </article>
                 </div>
                 <div class="divider"></div>
