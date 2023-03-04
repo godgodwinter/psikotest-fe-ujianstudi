@@ -141,6 +141,16 @@ setTimeout(fn_waktu_default, 3000, false);
                     <span>Ujian aktif tidak ditemukan!</span>
                 </div>
             </div>
+            <div class="py-2 space-x-2">
+                <!-- <button class="btn btn-warning btn-sm" @click="exportJson()">Export Data Ujian</button> -->
+                <!-- {{ waktu }} -->
+                <button class="btn btn-error btn-sm" @click="refreshDataUjian()" v-if="interval_reset_timer < 1">Refresh
+                    Data
+                    Ujian</button>
+                <button class="btn btn-dark btn-sm" v-else>Refresh Data Ujian</button>
+                <!-- <p>{{ timerReset }}</p> -->
+                <p>Refresh data ujian aktif dalam : {{ interval_reset_timer }} Detik</p>
+            </div>
         </div>
         <div class="py-10 p-4 mx-2 rounded-lg border" v-else>
             <div class="py-2 space-x-2">
@@ -181,7 +191,7 @@ setTimeout(fn_waktu_default, 3000, false);
                                     <button class="btn btn-info btn-sm" @click="doMulai(item.id, index)">MULAI</button>
                                 </span>
                                 <!-- <button class="btn btn-warning" v-else-if="item.status == 'selesai'">SELESAI</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <button class="btn btn-primary" v-else @click="doMulai(item.id, item.tipe)">MULAI</button> -->
 
                             </td>
                             <th>{{ item.aspek_detail_nama }}</th>
