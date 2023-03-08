@@ -86,9 +86,18 @@ const doResume = () => {
             <span class="btn btn-ghost normal-case text-xl">UJIAN STUDI </span>
         </div>
         <div class="navbar-center hidden lg:flex">
+            <div @click="doResume()" class="text-xl"> <span class="font-bold text-md underline" v-if="waktu > 0">
+                    SOAL</span>
+                <span class="px-4 font-bold text-slate-600" v-if="waktu > 120">
+                    {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}</span>
+                <span class="px-4 font-bold text-red-600" v-else-if="waktu > 0">
+                    {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}</span>
+                <span v-else></span>
+            </div>
         </div>
-        <div class="navbar-end space-x-2">
-            <div @click="doResume()"> <span class="font-bold text-sm underline" v-if="waktu > 0"> SOAL</span>
+        <div class="navbar-end space-x-2 md:hidden">
+            <div @click="doResume()" class="text-lg"> <span class="font-bold text-md underline" v-if="waktu > 0">
+                    SOAL</span>
                 <span class="px-4 font-bold text-slate-600" v-if="waktu > 120">
                     {{ moment.utc(waktu * 1000).format("HH:mm:ss") }}</span>
                 <span class="px-4 font-bold text-red-600" v-else-if="waktu > 0">
