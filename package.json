@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --port=3110",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port=8200 --host"
   },
   "dependencies": {
     "@tanstack/vue-query": "^4.24.6",
