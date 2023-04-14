@@ -66,6 +66,18 @@ const goToSoal = (index, soal) => {
     router.push({ name: 'studi-proses-soal', params: { index } })
 }
 
+const getSemuaMapel = ref(ujianstudiPagesStore.get_siswa_ujianstudi);
+const fn_check_index_mapel_aktif = (id) => {
+    // get semua mapel
+    for (const [index_mapel, mapel] of getSemuaMapel.value.entries()) {
+        if (mapel.id === id) {
+            return index_mapel;
+        }
+    }
+    return null;
+    // periksa yang id nya sama kemudian return index
+}
+
 const doMulai = async () => {
     btnLoading.value = true
     if (waktu.value == 0) {
@@ -77,10 +89,17 @@ const doMulai = async () => {
 
         // console.log('====================================');
         // onKlik(tgl_selesai, aspek_detail_id.value, index.value)
+        // console.log(getMapelAktif, ujianstudiPagesStore.get_siswa_ujianstudi_soal_aktif);
+
+        let aspekdetail_index = index.value;
+        // console.log('====================================');
+        // console.log(aspekdetail_index);
+        // console.log('====================================');
         try {
             let dataFormSend = {
                 tgl_mulai: moment(tgl_mulai).format(),
                 tgl_selesai: moment(tgl_selesai).format(),
+                aspekdetail_index: aspekdetail_index,
             }
             // console.log('====================================');
             // console.log(dataFormSend);

@@ -57,6 +57,7 @@ ujianstudiPagesStore.$subscribe(
 
 const soal_jml = ref(0);
 const dataMapel_aktif = ref(ujianstudiPagesStore.get_siswa_ujianstudi_aktif);
+const getSemuaMapel = ref(ujianstudiPagesStore.get_siswa_ujianstudi);
 const fn_delay_response = async (args) => {
     // console.log(ujianstudiPagesStore.get_siswa_ujianstudi_aktif);
     // data.value = await getSoal(ujianstudiPagesStore.get_siswa_ujianstudi_aktif, index.value)
@@ -84,6 +85,17 @@ const fn_delay_response = async (args) => {
 // }
 setTimeout(fn_delay_response, 2000, 'argumen example');
 
+
+const fn_check_index_mapel_aktif = (id) => {
+    // get semua mapel
+    for (const [index_mapel, mapel] of getSemuaMapel.value.entries()) {
+        if (mapel.id === id) {
+            return index_mapel;
+        }
+    }
+    return null;
+    // periksa yang id nya sama kemudian return index
+}
 const doStoreData = async (kode_jawaban) => {
     buttonSaveDisabled.value = 5;
     // console.log(kode_jawaban);
@@ -95,13 +107,16 @@ const doStoreData = async (kode_jawaban) => {
             ujianstudiPagesStore.set_siswa_ujianstudi_soal_aktif(getMapelAktif.soal[index_soal], index_soal, true);
         }
     }
+    let aspekdetail_index = fn_check_index_mapel_aktif(getMapelAktif.id);
 
     try {
         let dataFormSend = {
             kode_jawaban,
+            aspekdetail_index: aspekdetail_index,
+            soal_index: data.value.index,
         }
         console.log('====================================');
-        console.log("soal_id:", data.value.id, dataFormSend);
+        console.log("soal_id:", data.value.id, dataFormSend, getMapelAktif);
         console.log('====================================');
         const response = await Api.post(`siswa/ujianstudi/aspek_detail/jawab/${data.value.id}`, dataFormSend);
         // console.log(response);
@@ -163,13 +178,13 @@ const goNext = (indexNow) => {
                         </button>
 
                         <!-- <button class="btn btn-primary gap-2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  BELUM DIJAWAB
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="badge badge-warning">5</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              BELUM DIJAWAB
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="badge badge-warning">5</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </button> -->
                     </div>
                     <div class="w-96 pb-0 ">
                         <!-- {{ soal_index }} -
-                                                                                                                                                                                        {{ soal_jml }} -->
+                                                                                                                                                                                                                                                    {{ soal_jml }} -->
                         <div class=" lg:flex justify-end px-2 space-x-2 ">
                             <button @click="goBack(soal_index)" v-if="soal_index > 0">
                                 <button class="btn btn-sm btn-accent">Sebelumnya</button>
@@ -257,7 +272,7 @@ const goNext = (indexNow) => {
                 <!-- <div class="divider"></div> -->
                 <div class="pb-5">
                     <!-- {{ soal_index }} -
-                                                                                                                                                                                            {{ soal_jml }} -->
+                                                                                                                                                                                                                                                        {{ soal_jml }} -->
                     <div class="w-full flex justify-end px-4 space-x-2">
                         <button @click="goBack(soal_index)" v-if="soal_index > 0">
                             <button class="btn btn-sm btn-accent">Sebelumnya</button>
