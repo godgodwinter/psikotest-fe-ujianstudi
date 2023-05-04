@@ -13,7 +13,7 @@ const router = useRouter()
 const ujianstudiPagesStore = useUjianstudiPagesStore();
 const waktu = ref(1);
 const timerStore = useTimerStore();
-const durasi_tunggu = ref(30); //1menit
+const durasi_tunggu = ref(10); //1menit
 const loading = ref(true);
 const interval_reset_timer = ref(durasi_tunggu.value);
 
